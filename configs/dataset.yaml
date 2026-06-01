@@ -1,0 +1,15 @@
+dataset:
+
+  root_dir: "../../data/bdd100k"
+
+  train_images: "images/train"
+  val_images: "images/val"
+
+  train_labels: "labels/det_train.json"
+  val_labels: "labels/det_val.json"
+
+  processed_dir: "processed"
+
+  reports_dir: "../outputs/reports"
+
+  figures_dir: "../outputs/figures"

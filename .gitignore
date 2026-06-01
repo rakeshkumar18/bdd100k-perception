@@ -1,0 +1,24 @@
+# Dataset
+data/
+*.tar
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+.env
+
+# MLflow
+mlruns/
+
+# Outputs
+outputs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Mac
+.DS_Store

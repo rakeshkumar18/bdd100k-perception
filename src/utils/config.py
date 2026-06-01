@@ -1,28 +1,47 @@
+"""
+Configuration Manager
+"""
+
 from pathlib import Path
+import os
 import yaml
+
+from dotenv import load_dotenv
 
 
 class ConfigManager:
 
-    _instance = None
+    def __init__(self):
 
-    def __new__(cls):
+        self.project_root = (
+            Path(__file__).resolve().parents[2]
+        )
 
-        if cls._instance is None:
+        env_path = self.project_root / ".env"
 
-            cls._instance = super().__new__(cls)
+        load_dotenv(env_path)
 
-            config_path = (
-                Path(__file__)
-                .parents[2]
-                / "configs"
-                / "dataset.yaml"
-            )
+        config_path = (
+            self.project_root
+            / "configs"
+            / "dataset.yaml"
+        )
 
-            with open(config_path) as f:
-                cls._instance.config = yaml.safe_load(f)
-
-        return cls._instance
+        with open(config_path, "r") as file:
+            self.config = yaml.safe_load(file)
 
     def get(self):
+
         return self.config
+
+    @property
+    def dataset_root(self):
+
+        root = os.getenv("BDD100K_ROOT")
+
+        if root:
+            return root
+
+        raise ValueError(
+            "BDD100K_ROOT not found in .env"
+        )

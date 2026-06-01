@@ -1,0 +1,12 @@
+BDD_CLASSES = [
+    "bike",
+    "bus",
+    "car",
+    "motor",
+    "person",
+    "rider",
+    "traffic light",
+    "traffic sign",
+    "train",
+    "truck",
+]

@@ -1,15 +1,21 @@
 dataset:
 
-  root_dir: "../../data/bdd100k"
+  image_root: "images/100k"
 
-  train_images: "images/train"
-  val_images: "images/val"
+  train_images: "images/100k/train"
+  val_images: "images/100k/val"
+  test_images: "images/100k/test"
 
-  train_labels: "labels/det_train.json"
-  val_labels: "labels/det_val.json"
+  train_labels: "labels/100k/train"
+  val_labels: "labels/100k/val"
+  test_labels: "labels/100k/test"
 
-  processed_dir: "processed"
+analysis:
 
-  reports_dir: "../outputs/reports"
+  reports_dir: "outputs/reports"
 
-  figures_dir: "../outputs/figures"
+  figures_dir: "outputs/figures"
+
+processed:
+
+  processed_dir: "outputs/processed"

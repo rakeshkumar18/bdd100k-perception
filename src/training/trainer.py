@@ -1,0 +1,19 @@
+from ultralytics import YOLO
+
+
+class YOLOTrainer:
+
+    def __init__(self, model_name="yolov8n.pt"):
+
+        self.model = YOLO(model_name)
+
+    def train(self, data_yaml, epochs=50, imgsz=640, batch=16):
+
+        results = self.model.train(
+            data=data_yaml,
+            epochs=epochs,
+            imgsz=imgsz,
+            batch=batch
+        )
+
+        return results

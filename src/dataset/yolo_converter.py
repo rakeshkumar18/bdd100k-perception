@@ -8,7 +8,15 @@ class YOLOConverter:
 
         self.class_map = class_map
 
-    def convert_bbox(self, x1, y1, x2, y2, img_w=1280, img_h=720):
+    def convert_bbox(
+        self,
+        x1,
+        y1,
+        x2,
+        y2,
+        img_w=1280,
+        img_h=720
+    ):
 
         x_center = ((x1 + x2) / 2.0) / img_w
         y_center = ((y1 + y2) / 2.0) / img_h
@@ -18,15 +26,17 @@ class YOLOConverter:
 
         return x_center, y_center, w, h
 
-    def convert_csv(
+    def convert_df(
         self,
-        csv_path: str,
-        output_label_dir: str
+        df: pd.DataFrame,
+        output_dir: str
     ):
 
-        df = pd.read_csv(csv_path)
-        output_dir = Path(output_label_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir = Path(output_dir)
+        output_dir.mkdir(
+            parents=True,
+            exist_ok=True
+        )
 
         grouped = df.groupby("image_name")
 
@@ -51,10 +61,30 @@ class YOLOConverter:
                 )
 
                 lines.append(
-                    f"{class_id} {x_c:.6f} {y_c:.6f} {w:.6f} {h:.6f}"
+                    f"{class_id} "
+                    f"{x_c:.6f} "
+                    f"{y_c:.6f} "
+                    f"{w:.6f} "
+                    f"{h:.6f}"
                 )
 
-            label_file = output_dir / f"{image_name.replace('.jpg','')}.txt"
+            label_file = (
+                output_dir /
+                f"{Path(image_name).stem}.txt"
+            )
 
             with open(label_file, "w") as f:
                 f.write("\n".join(lines))
+
+    def convert_csv(
+        self,
+        csv_path,
+        output_dir
+    ):
+
+        df = pd.read_csv(csv_path)
+
+        self.convert_df(
+            df=df,
+            output_dir=output_dir
+        )

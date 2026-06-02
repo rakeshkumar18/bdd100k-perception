@@ -1,16 +1,12 @@
+# scripts/test_paths.py
+
 from src.utils.paths import *
 
-print("\nPROJECT_ROOT")
-print(PROJECT_ROOT)
+print("PROJECT_ROOT =", PROJECT_ROOT)
+print("DATASET_ROOT =", DATASET_ROOT)
 
-print("\nDATASET_ROOT")
-print(DATASET_ROOT)
+print("TRAIN_IMAGES =", TRAIN_IMAGES.exists())
+print("VAL_IMAGES =", VAL_IMAGES.exists())
 
-print("\nTRAIN_IMAGES")
-print(TRAIN_IMAGES)
-
-print("\nTRAIN_LABELS")
-print(TRAIN_LABELS)
-
-print("\nREPORT_DIR")
-print(REPORT_DIR)
+print("TRAIN_LABELS =", TRAIN_LABELS.exists())
+print("VAL_LABELS =", VAL_LABELS.exists())

@@ -1,0 +1,16 @@
+path: /Volumes/Extreme Pro/Files/Github/Applied_cv/datasets/bdd100k
+
+train: images/100k/train
+val: images/100k/val
+
+names:
+  0: car
+  1: truck
+  2: bus
+  3: person
+  4: rider
+  5: bike
+  6: motor
+  7: traffic light
+  8: traffic sign
+  9: train

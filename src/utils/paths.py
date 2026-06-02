@@ -6,18 +6,22 @@ from pathlib import Path
 
 from src.utils.config import ConfigManager
 
-
 cfg = ConfigManager()
-
 CONFIG = cfg.get()
 
-PROJECT_ROOT = (
-    Path(__file__).resolve().parents[2]
-)
+#
+# Project Root
+#
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+#
+# Dataset Root
+#
 
 DATASET_ROOT = (
     PROJECT_ROOT /
-    cfg.dataset_root
+    CONFIG["dataset_root"]
 ).resolve()
 
 #
@@ -34,11 +38,6 @@ VAL_IMAGES = (
     CONFIG["dataset"]["val_images"]
 )
 
-TEST_IMAGES = (
-    DATASET_ROOT /
-    CONFIG["dataset"]["test_images"]
-)
-
 #
 # Label Directories
 #
@@ -51,11 +50,6 @@ TRAIN_LABELS = (
 VAL_LABELS = (
     DATASET_ROOT /
     CONFIG["dataset"]["val_labels"]
-)
-
-TEST_LABELS = (
-    DATASET_ROOT /
-    CONFIG["dataset"]["test_labels"]
 )
 
 #
@@ -78,14 +72,14 @@ PROCESSED_DIR = (
 )
 
 #
-# Create output directories
+# Create Output Directories
 #
 
-for directory in [
+for directory in (
     REPORT_DIR,
     FIGURE_DIR,
     PROCESSED_DIR,
-]:
+):
     directory.mkdir(
         parents=True,
         exist_ok=True

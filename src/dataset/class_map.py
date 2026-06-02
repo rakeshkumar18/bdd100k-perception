@@ -5,7 +5,8 @@ CLASS_MAP = {
     "person": 3,
     "rider": 4,
     "bike": 5,
-    "motorcycle": 6,
+    "motor": 6,
     "traffic light": 7,
-    "traffic sign": 8
-} 
+    "traffic sign": 8,
+    "train": 9,
+}

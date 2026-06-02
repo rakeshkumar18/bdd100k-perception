@@ -10,16 +10,20 @@ CLASS_MAP = {
     "person": 3,
     "rider": 4,
     "bike": 5,
-    "motorcycle": 6,
+    "motor": 6,
     "traffic light": 7,
-    "traffic sign": 8
+    "traffic sign": 8,
+    "train": 9,
 }
 
 
-def main():
+def convert_split(
+    csv_name,
+    output_dir
+):
 
     df = pd.read_csv(
-        REPORT_DIR / "train_objects.csv"
+        REPORT_DIR / csv_name
     )
 
     converter = YOLOConverter(
@@ -27,8 +31,21 @@ def main():
     )
 
     converter.convert_df(
-        df,
-        output_dir=REPORT_DIR / "yolo_labels/train"
+        df=df,
+        output_dir=output_dir
+    )
+
+
+def main():
+
+    convert_split(
+        "train_objects.csv",
+        REPORT_DIR / "yolo_labels/train"
+    )
+
+    convert_split(
+        "val_objects.csv",
+        REPORT_DIR / "yolo_labels/val"
     )
 
 

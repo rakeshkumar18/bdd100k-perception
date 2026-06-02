@@ -1,19 +1,16 @@
-dataset:
+dataset_root: "../datasets/bdd100k"
 
-  image_root: "images/100k"
+dataset:
 
   train_images: "images/100k/train"
   val_images: "images/100k/val"
-  test_images: "images/100k/test"
 
   train_labels: "labels/100k/train"
   val_labels: "labels/100k/val"
-  test_labels: "labels/100k/test"
 
 analysis:
 
   reports_dir: "outputs/reports"
-
   figures_dir: "outputs/figures"
 
 processed:

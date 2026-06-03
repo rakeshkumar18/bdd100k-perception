@@ -14,11 +14,13 @@ venv/
 # MLflow
 mlruns/
 
-# Outputs
-outputs/
-
 # Jupyter
 .ipynb_checkpoints/
 
 # Mac
 .DS_Store
+
+# Model checkpoints
+.pt
+# output files
+outputs/

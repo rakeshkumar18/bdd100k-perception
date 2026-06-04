@@ -1,5 +1,7 @@
+from ultralytics import settings
 from src.training.trainer import YOLOTrainer
 
+settings.update({"mlflow": False})
 
 def main():
 

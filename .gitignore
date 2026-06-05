@@ -22,3 +22,5 @@ mlruns/
 
 # yolo labels
 yolo_labels/
+
+reports/

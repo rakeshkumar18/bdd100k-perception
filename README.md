@@ -264,7 +264,13 @@ Dashboard:
 ```text
 http://localhost:8501
 ```
+## Update docker after change
 
+```bash
+docker compose down
+docker compose build --no-cache
+docker compose up
+```
 ---
 
 ## Dataset

@@ -16,7 +16,29 @@ from src.dashboard.mlflow_client import (
 from src.dashboard.visualizations import (
     create_loss_chart
 )
+from src.inference.predictor import (
+    YOLOPredictor
+)
 
+from src.inference.visualize import (
+    get_annotated_image
+)
+
+from src.inference.utils import (
+    extract_detections
+)
+
+# -------------------------
+# Predictor Cache
+# -------------------------
+
+@st.cache_resource
+def load_predictor():
+
+    return YOLOPredictor(
+        model_path=
+        "runs/detect/outputs/training/yolov8n_bdd100k/weights/best.pt"
+    )
 
 
 st.set_page_config(
@@ -345,110 +367,164 @@ elif page == "Dataset Analysis":
     )
 
 # ==========================================================
-# Inferencing
+# INFERENCE
 # ==========================================================
 
 elif page == "Inference":
 
-    from src.inference.predictor import YOLOPredictor
-    from src.inference.utils import extract_detections
-    from src.inference.visualize import get_annotated_image
-
-    @st.cache_resource
-    def load_predictor():
-        return YOLOPredictor(
-            model_path="runs/detect/outputs/training/yolov8n_bdd100k/weights/best.pt"
-        )
-
     st.title(
-        "YOLO Image Inference"
+        "YOLO Multi-Image Inference"
     )
 
     predictor = load_predictor()
 
-    uploaded_file = st.file_uploader(
-        "Upload Image",
+    uploaded_files = st.file_uploader(
+        "Upload Images",
         type=[
             "jpg",
             "jpeg",
             "png"
-        ]
+        ],
+        accept_multiple_files=True
     )
 
-    if uploaded_file:
+    if uploaded_files:
 
-        with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=".jpg"
-        ) as tmp:
+        total_counts = {}
 
-            tmp.write(
-                uploaded_file.read()
-            )
+        for uploaded_file in uploaded_files:
 
-            image_path = tmp.name
-
-        result = predictor.predict(
-            image_path
-        )
-
-        annotated = (
-            get_annotated_image(
-                result
-            )
-        )
-
-        st.image(
-            annotated,
-            caption="Prediction",
-            width='stretch'
-        )
-
-        detections = (
-            extract_detections(
-                result
-            )
-        )
-
-        st.subheader(
-            "Detections"
-        )
-
-        if detections:
-
-            df = pd.DataFrame(
-                detections
-            )
-
-            st.dataframe(
-                df,
-                width='stretch'
-            )
-
-            counts = (
-                df["class"]
-                .value_counts()
-                .reset_index()
-            )
-
-            counts.columns = [
-                "Class",
-                "Count"
-            ]
+            st.divider()
 
             st.subheader(
-                "Object Counts"
+                uploaded_file.name
+            )
+
+            with tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=".jpg"
+            ) as tmp:
+
+                tmp.write(
+                    uploaded_file.read()
+                )
+
+                image_path = tmp.name
+
+            result = predictor.predict(
+                image_path
+            )
+
+            annotated = (
+                get_annotated_image(
+                    result
+                )
+            )
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                st.image(
+                    image_path,
+                    caption="Original Image",
+                    width='stretch'
+                )
+
+            with col2:
+
+                st.image(
+                    annotated,
+                    caption="YOLO Prediction",
+                    width='stretch'
+                )
+
+            detections = (
+                extract_detections(
+                    result
+                )
+            )
+
+            st.subheader(
+                "Detections"
+            )
+
+            if detections:
+
+                df = pd.DataFrame(
+                    detections
+                )
+
+                st.dataframe(
+                    df,
+                    width='stretch'
+                )
+
+                counts = (
+                    df["class"]
+                    .value_counts()
+                    .reset_index()
+                )
+
+                counts.columns = [
+                    "Class",
+                    "Count"
+                ]
+
+                st.subheader(
+                    "Object Counts"
+                )
+
+                st.dataframe(
+                    counts,
+                    width='stretch'
+                )
+
+                for _, row in counts.iterrows():
+
+                    cls = row["Class"]
+                    cnt = row["Count"]
+
+                    total_counts[cls] = (
+                        total_counts.get(cls, 0)
+                        + cnt
+                    )
+
+            else:
+
+                st.info(
+                    "No detections found"
+                )
+
+        st.divider()
+
+        st.header(
+            "Overall Detection Summary"
+        )
+
+        if total_counts:
+
+            summary_df = pd.DataFrame(
+                {
+                    "Class": total_counts.keys(),
+                    "Count": total_counts.values()
+                }
+            )
+
+            summary_df = summary_df.sort_values(
+                by="Count",
+                ascending=False
             )
 
             st.dataframe(
-                counts,
+                summary_df,
                 width='stretch'
             )
 
-        else:
-
-            st.info(
-                "No detections found"
+            st.bar_chart(
+                summary_df.set_index(
+                    "Class"
+                )
             )
 
 # ==========================================================

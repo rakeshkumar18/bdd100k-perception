@@ -20,8 +20,6 @@ mlruns/
 # Mac
 .DS_Store
 
-# yolo labels
-yolo_labels/
 
 reports/
 

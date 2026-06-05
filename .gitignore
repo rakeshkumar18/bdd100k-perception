@@ -24,3 +24,5 @@ mlruns/
 yolo_labels/
 
 reports/
+
+*.csv

@@ -20,7 +20,5 @@ mlruns/
 # Mac
 .DS_Store
 
-# Model checkpoints
-.pt
-# output files
-outputs/
+# yolo labels
+yolo_labels/

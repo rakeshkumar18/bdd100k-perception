@@ -20,7 +20,7 @@ mlruns/
 # Mac
 .DS_Store
 
-
+outputs/
 reports/
 
 *.csv

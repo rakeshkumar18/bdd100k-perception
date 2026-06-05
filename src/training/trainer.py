@@ -12,6 +12,7 @@ class YOLOTrainer:
         self,
         model_name="yolov8n.pt"
     ):
+        self.model_name = model_name
         self.model = YOLO(model_name)
 
     def train(
@@ -31,7 +32,7 @@ class YOLOTrainer:
         ):
             
             mlflow.log_params({
-                "model": "yolov8n.pt",
+                "model": self.model_name,
                 "epochs": epochs,
                 "imgsz": imgsz,
                 "batch": batch,
@@ -53,6 +54,46 @@ class YOLOTrainer:
             )
 
             run_dir = Path(results.save_dir)
+
+            results_dict = results.results_dict
+
+            best_model_path = (
+                run_dir /
+                "weights" /
+                "best.pt"
+            )
+
+            mlflow.set_tag(
+                "best_model_path",
+                str(best_model_path)
+            )
+
+            mlflow.log_metrics({
+                "mAP50B": float(
+                    results_dict.get(
+                        "metrics/mAP50(B)",
+                        0.0
+                    )
+                ),
+                "mAP50-95B": float(
+                    results_dict.get(
+                        "metrics/mAP50-95(B)",
+                        0.0
+                    )
+                ),
+                "precisionB": float(
+                    results_dict.get(
+                        "metrics/precision(B)",
+                        0.0
+                    )
+                ),
+                "recallB": float(
+                    results_dict.get(
+                        "metrics/recall(B)",
+                        0.0
+                    )
+                ),
+            })
 
             mlflow.log_artifacts(str(run_dir))
 

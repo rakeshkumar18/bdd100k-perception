@@ -1,0 +1,21 @@
+services:
+
+  dashboard:
+
+    build: .
+
+    container_name: bdd100k-dashboard
+
+    ports:
+      - "8501:8501"
+
+    volumes:
+      - ./outputs:/app/outputs
+      - ./runs:/app/runs
+      - ./configs:/app/configs
+      - ./mlruns:/app/mlruns
+
+    environment:
+      - PYTHONPATH=/app
+
+    restart: unless-stopped

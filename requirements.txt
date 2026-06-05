@@ -1,1 +1,8 @@
 python-dotenv==1.2.2
+streamlit
+plotly
+mlflow
+ultralytics
+opencv-python-headless
+pandas
+numpy

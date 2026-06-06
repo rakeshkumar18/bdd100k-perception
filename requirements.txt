@@ -7,3 +7,6 @@ PyYAML==6.0.3
 opencv-python==4.13.0.92
 plotly==6.8.0
 pillow==12.2.0
+mlflow==3.13.0
+ultralytics
+opencv-python-headless

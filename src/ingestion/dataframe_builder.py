@@ -1,8 +1,7 @@
-"""
-Build DataFrame from SceneAnnotations
-"""
+"""Build pandas DataFrames from scene-level BDD100K annotations."""
 
-from typing import List, Tuple
+from pathlib import Path
+from typing import List
 
 import pandas as pd
 
@@ -10,16 +9,22 @@ from src.ingestion.schema import SceneAnnotation
 
 
 class DataFrameBuilder:
+    """Convert scene annotations into an object-level pandas DataFrame."""
 
     def build(self, scenes: List[SceneAnnotation]) -> pd.DataFrame:
+        """Build a DataFrame containing one row per annotated object.
 
+        Args:
+            scenes: List of parsed scene annotations.
+
+        Returns:
+            A DataFrame containing valid object annotations and derived fields.
+        """
         rows = []
         invalid_rows = []
 
         for scene in scenes:
-
             for obj in scene.objects:
-
                 width = obj.bbox.width
                 height = obj.bbox.height
 
@@ -42,7 +47,6 @@ class DataFrameBuilder:
                     "is_valid_box": is_valid,
                 }
 
-                # Keep invalid samples for audit
                 if not is_valid:
                     invalid_rows.append(row)
                     continue
@@ -51,22 +55,22 @@ class DataFrameBuilder:
 
         df = pd.DataFrame(rows)
 
-        # Recompute safe derived fields
         if not df.empty:
             df["area"] = df["width"] * df["height"]
-
             df["aspect_ratio"] = df["width"] / df["height"]
 
-        # Optional: log invalid samples
         if invalid_rows:
             invalid_df = pd.DataFrame(invalid_rows)
             print(f"[WARN] Invalid boxes found: {len(invalid_rows)}")
-
-            # You can enable this if you want persistent audit
             invalid_df.to_csv("outputs/reports/invalid_boxes.csv", index=True)
 
         return df
 
-    def save_csv(self, df, output_path):
+    def save_csv(self, df: pd.DataFrame, output_path: Path) -> None:
+        """Save a DataFrame to a CSV file.
 
+        Args:
+            df: DataFrame to save.
+            output_path: Output CSV file path.
+        """
         df.to_csv(output_path, index=False)

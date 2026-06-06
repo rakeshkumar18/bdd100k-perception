@@ -24,3 +24,5 @@ mlruns/
 reports/
 
 *.csv
+
+*.egg-info/

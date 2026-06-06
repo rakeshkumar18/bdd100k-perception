@@ -308,7 +308,10 @@ Containerized deployment using:
 python -m venv assignment
 source assignment/bin/activate
 ```
-
+### Install project in editable mode
+```bash
+python -m pip install -e .
+```
 ### Install Dependencies
 
 ```bash
@@ -367,7 +370,7 @@ docker compose build
 Run:
 
 ```bash
-docker compose up -d
+docker compose up
 ```
 
 Dashboard:

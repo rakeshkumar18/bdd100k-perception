@@ -1,8 +1,9 @@
-python-dotenv==1.2.2
-streamlit
-plotly
-mlflow
-ultralytics
-opencv-python-headless
-pandas
-numpy
+pandas==2.3.3
+numpy==2.4.6
+matplotlib==3.10.9
+seaborn==0.12.2
+streamlit==1.58.0
+PyYAML==6.0.3
+opencv-python==4.13.0.92
+plotly==6.8.0
+pillow==12.2.0

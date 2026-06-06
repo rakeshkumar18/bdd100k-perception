@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 from pprint import pprint
 
-sample_file = next(
-    Path("../data/bdd100k/labels/100k/train").glob("*.json")
-)
+sample_file = next(Path("../data/bdd100k/labels/100k/train").glob("*.json"))
 
 with open(sample_file) as f:
     data = json.load(f)

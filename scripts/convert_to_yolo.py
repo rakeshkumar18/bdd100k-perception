@@ -2,7 +2,6 @@ from src.dataset.yolo_converter import YOLOConverter
 from src.utils.paths import REPORT_DIR
 import pandas as pd
 
-
 CLASS_MAP = {
     "car": 0,
     "truck": 1,
@@ -17,36 +16,20 @@ CLASS_MAP = {
 }
 
 
-def convert_split(
-    csv_name,
-    output_dir
-):
+def convert_split(csv_name, output_dir):
 
-    df = pd.read_csv(
-        REPORT_DIR / csv_name
-    )
+    df = pd.read_csv(REPORT_DIR / csv_name)
 
-    converter = YOLOConverter(
-        class_map=CLASS_MAP
-    )
+    converter = YOLOConverter(class_map=CLASS_MAP)
 
-    converter.convert_df(
-        df=df,
-        output_dir=output_dir
-    )
+    converter.convert_df(df=df, output_dir=output_dir)
 
 
 def main():
 
-    convert_split(
-        "train_objects.csv",
-        REPORT_DIR / "yolo_labels/train"
-    )
+    convert_split("train_objects.csv", REPORT_DIR / "yolo_labels/train")
 
-    convert_split(
-        "val_objects.csv",
-        REPORT_DIR / "yolo_labels/val"
-    )
+    convert_split("val_objects.csv", REPORT_DIR / "yolo_labels/val")
 
 
 if __name__ == "__main__":

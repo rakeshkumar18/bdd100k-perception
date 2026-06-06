@@ -3,11 +3,10 @@ from src.training.trainer import YOLOTrainer
 
 settings.update({"mlflow": False})
 
+
 def main():
 
-    trainer = YOLOTrainer(
-        model_name="yolov8n.pt"
-    )
+    trainer = YOLOTrainer(model_name="yolov8n.pt")
 
     trainer.train(
         data_yaml="configs/yolo_dataset.yaml",

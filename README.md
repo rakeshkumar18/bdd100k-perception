@@ -15,7 +15,31 @@ The goal is to build a production-style machine learning workflow that goes beyo
 * Interactive dashboards
 * Docker deployment
 
-The project follows a modular structure that can be extended toward a complete MLOps workflow.
+## Assignment Scope
+
+This repository includes a dedicated analysis of the BDD100K dataset for the **object detection** task only.
+
+Included:
+- 10 object-detection classes with `box2d` annotations:
+  - bike
+  - bus
+  - car
+  - motor
+  - person
+  - rider
+  - traffic light
+  - traffic sign
+  - train
+  - truck
+- Train split
+- Validation split
+
+Excluded:
+- Test split
+- Drivable area annotations
+- Lane marking annotations
+- Semantic segmentation labels
+- Any non-detection tasks
 
 ---
 
@@ -157,41 +181,121 @@ Containerized deployment using:
 ## Project Structure
 
 ```text
-bdd100k-perception/
-│
-├── configs/
+├── Dockerfile
+├── Project_Readme.md
+├── README.md
+├── configs
 │   ├── dataset.yaml
 │   ├── evaluation.yaml
 │   ├── training.yaml
 │   └── yolo_dataset.yaml
-│
-├── data/
-│
-├── outputs/
-│   ├── figures/
-│   └── mlflow/
-│
-├── runs/
-│
-├── scripts/
-│   ├── train_yolo.py
-│   ├── evaluate_model.py
-│   ├── batch_predict.py
-│   └── get_best_model.py
-│
-├── src/
-│   ├── dashboard/
-│   ├── dataset/
-│   ├── evaluation/
-│   ├── inference/
-│   ├── model_registry/
-│   ├── tracking/
-│   └── training/
-│
-├── Dockerfile
 ├── docker-compose.yml
+├── mlflow.db
+├── mlruns
+│   └── 1
+│       └── c78fba05f4714fcdb27cd5374ce097d7
+│           └── artifacts
+├── outputs
+│   ├── figures
+│   ├── mlflow
+│   │   └── mlflow.db
+│   ├── predictions
+│   ├── processed
+│   └── reports
+├── pytest.ini
 ├── requirements.txt
-└── README.md
+├── runs
+│   └── detect
+│       ├── outputs
+│       │   └── training
+│       ├── val
+│       └── val-2
+├── scripts
+│   ├── __init__.py
+│   ├── analyze_dataset.py
+│   ├── batch_predict.py
+│   ├── check_runs.py
+│   ├── convert_to_yolo.py
+│   ├── evaluate.py
+│   ├── evaluate_model.py
+│   ├── get_best_model.py
+│   ├── inspect_label.py
+│   ├── launch_dashboard.py
+│   ├── predict.py
+│   ├── test_paths.py
+│   ├── train_yolo.py
+│   └── validate_dataset.py
+├── setup.py
+├── src
+│   ├── __init__.py
+│   ├── analysis
+│   │   ├── __init__.py
+│   │   ├── bbox_stats.py
+│   │   ├── class_stats.py
+│   │   ├── occlusion_stats.py
+│   │   ├── scene_stats.py
+│   │   └── train_val_comparison.py
+│   ├── dashboard
+│   │   ├── __init__.py
+│   │   ├── app.py
+│   │   ├── mlflow_client.py
+│   │   └── visualizations.py
+│   ├── dataset
+│   │   ├── __init__.py
+│   │   ├── bdd_loader.py
+│   │   ├── class_map.py
+│   │   ├── collate_fn.py
+│   │   ├── dataset_validator.py
+│   │   ├── transforms.py
+│   │   ├── yolo_converter.py
+│   │   └── yolo_yaml.py
+│   ├── evaluation
+│   │   ├── __init__.py
+│   │   ├── confusion_matrix.py
+│   │   ├── evaluator.py
+│   │   ├── failure_analysis.py
+│   │   ├── metrics.py
+│   │   └── visualize.py
+│   ├── inference
+│   │   ├── __pycache__
+│   │   ├── batch_predict.py
+│   │   ├── predictor.py
+│   │   ├── utils.py
+│   │   └── visualize.py
+│   ├── ingestion
+│   │   ├── __init__.py
+│   │   ├── dataframe_builder.py
+│   │   ├── parser.py
+│   │   └── schema.py
+│   ├── model_registry
+│   │   └── model_registry.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── rt_detr.py
+│   │   └── yolo.py
+│   ├── tracking
+│   │   ├── __init__.py
+│   │   └── mlflow_logger.py
+│   ├── training
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── train.py
+│   │   └── trainer.py
+│   └── utils
+│       ├── __init__.py
+│       ├── config.py
+│       ├── constants.py
+│       ├── file_utils.py
+│       ├── logger.py
+│       ├── paths.py
+│       └── plotting.py
+├── tests
+│   ├── test.py
+│   ├── test_dataframe_builder.py
+│   ├── test_parser.py
+│   ├── test_path.py
+│   └── test_schema.py
+└── yolov8n.pt
 ```
 
 ---
@@ -212,7 +316,13 @@ pip install -r requirements.txt
 ```
 
 ---
+## EDA
 
+```bash
+python -m scripts.analyze_dataset
+```
+### This will genearte the figure and csv for EDA analysis.
+---
 ## Training
 
 ```bash
@@ -220,6 +330,7 @@ python -m scripts.train_yolo
 ```
 
 ---
+
 
 ## Evaluation
 

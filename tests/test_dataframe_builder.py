@@ -1,7 +1,5 @@
 from src.ingestion.parser import BDDParser
-from src.ingestion.dataframe_builder import (
-    DataFrameBuilder
-)
+from src.ingestion.dataframe_builder import DataFrameBuilder
 
 from src.utils.paths import TRAIN_LABELS
 
@@ -10,10 +8,7 @@ def test_dataframe_creation():
 
     parser = BDDParser()
 
-    scenes = parser.load_directory(
-        TRAIN_LABELS,
-        max_files=5
-    )
+    scenes = parser.load_directory(TRAIN_LABELS, max_files=5)
 
     builder = DataFrameBuilder()
 

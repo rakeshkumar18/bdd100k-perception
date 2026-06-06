@@ -3,104 +3,40 @@ Centralized Path Management
 """
 
 from pathlib import Path
-
 from src.utils.config import ConfigManager
 
 cfg = ConfigManager()
 CONFIG = cfg.get()
 
-#
-# Project Root
-#
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-#
-# Dataset Root
-#
+DATASET_ROOT = (PROJECT_ROOT / CONFIG["dataset_root"]).resolve()
 
-DATASET_ROOT = (
-    PROJECT_ROOT /
-    CONFIG["dataset_root"]
-).resolve()
+TRAIN_IMAGES = DATASET_ROOT / CONFIG["dataset"]["train_images"]
+VAL_IMAGES = DATASET_ROOT / CONFIG["dataset"]["val_images"]
 
-#
-# Image Directories
-#
+TRAIN_LABELS = DATASET_ROOT / CONFIG["dataset"]["train_labels"]
+VAL_LABELS = DATASET_ROOT / CONFIG["dataset"]["val_labels"]
 
-TRAIN_IMAGES = (
-    DATASET_ROOT /
-    CONFIG["dataset"]["train_images"]
-)
+REPORT_DIR = PROJECT_ROOT / CONFIG["analysis"]["reports_dir"]
+FIGURE_DIR = PROJECT_ROOT / CONFIG["analysis"]["figures_dir"]
+PROCESSED_DIR = PROJECT_ROOT / CONFIG["processed"]["processed_dir"]
 
-VAL_IMAGES = (
-    DATASET_ROOT /
-    CONFIG["dataset"]["val_images"]
-)
+for directory in (REPORT_DIR, FIGURE_DIR, PROCESSED_DIR):
+    directory.mkdir(parents=True, exist_ok=True)
 
-#
-# Label Directories
-#
 
-TRAIN_LABELS = (
-    DATASET_ROOT /
-    CONFIG["dataset"]["train_labels"]
-)
+def validate_required_paths() -> None:
+    """Validate all required dataset paths before analysis starts."""
+    required_paths = [
+        DATASET_ROOT,
+        TRAIN_IMAGES,
+        VAL_IMAGES,
+        TRAIN_LABELS,
+        VAL_LABELS,
+    ]
 
-VAL_LABELS = (
-    DATASET_ROOT /
-    CONFIG["dataset"]["val_labels"]
-)
-
-#
-# Output Directories
-#
-
-REPORT_DIR = (
-    PROJECT_ROOT /
-    CONFIG["analysis"]["reports_dir"]
-)
-
-FIGURE_DIR = (
-    PROJECT_ROOT /
-    CONFIG["analysis"]["figures_dir"]
-)
-
-PROCESSED_DIR = (
-    PROJECT_ROOT /
-    CONFIG["processed"]["processed_dir"]
-)
-
-#
-# Create Output Directories
-#
-
-for directory in (
-    REPORT_DIR,
-    FIGURE_DIR,
-    PROCESSED_DIR,
-):
-    directory.mkdir(
-        parents=True,
-        exist_ok=True
-    )
-
-#
-# Validation
-#
-
-required_paths = [
-    DATASET_ROOT,
-    TRAIN_IMAGES,
-    VAL_IMAGES,
-    TRAIN_LABELS,
-    VAL_LABELS,
-]
-
-for path in required_paths:
-
-    if not path.exists():
-
-        raise FileNotFoundError(
-            f"Missing path: {path}"
-        )
+    missing = [path for path in required_paths if not path.exists()]
+    if missing:
+        missing_str = "\n".join(str(path) for path in missing)
+        raise FileNotFoundError(f"Missing required paths:\n{missing_str}")

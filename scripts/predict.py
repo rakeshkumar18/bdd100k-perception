@@ -1,6 +1,4 @@
-from src.inference.predictor import (
-    YOLOPredictor
-)
+from src.inference.predictor import YOLOPredictor
 
 
 def main():
@@ -9,9 +7,7 @@ def main():
         model_path="runs/detect/outputs/training/yolov8n_bdd100k/weights/best.pt"
     )
 
-    results = predictor.predict(
-        image_path="sample.jpg"
-    )
+    results = predictor.predict(image_path="sample.jpg")
 
     print(results)
 

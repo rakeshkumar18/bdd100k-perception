@@ -8,10 +8,7 @@ from src.tracking.mlflow_logger import MLflowLogger
 
 class YOLOTrainer:
 
-    def __init__(
-        self,
-        model_name="yolov8n.pt"
-    ):
+    def __init__(self, model_name="yolov8n.pt"):
         self.model_name = model_name
         self.model = YOLO(model_name)
 
@@ -23,21 +20,19 @@ class YOLOTrainer:
         batch=8,
     ):
 
-        logger = MLflowLogger(
-            experiment_name="BDD100K_YOLO"
-        )
+        logger = MLflowLogger(experiment_name="BDD100K_YOLO")
 
-        with logger.start_run(
-            run_name="yolov8n_bdd100k"
-        ):
-            
-            mlflow.log_params({
-                "model": self.model_name,
-                "epochs": epochs,
-                "imgsz": imgsz,
-                "batch": batch,
-                "device": "mps",
-            })
+        with logger.start_run(run_name="yolov8n_bdd100k"):
+
+            mlflow.log_params(
+                {
+                    "model": self.model_name,
+                    "epochs": epochs,
+                    "imgsz": imgsz,
+                    "batch": batch,
+                    "device": "mps",
+                }
+            )
 
             results = self.model.train(
                 data=data_yaml,
@@ -57,43 +52,18 @@ class YOLOTrainer:
 
             results_dict = results.results_dict
 
-            best_model_path = (
-                run_dir /
-                "weights" /
-                "best.pt"
-            )
+            best_model_path = run_dir / "weights" / "best.pt"
 
-            mlflow.set_tag(
-                "best_model_path",
-                str(best_model_path)
-            )
+            mlflow.set_tag("best_model_path", str(best_model_path))
 
-            mlflow.log_metrics({
-                "mAP50B": float(
-                    results_dict.get(
-                        "metrics/mAP50(B)",
-                        0.0
-                    )
-                ),
-                "mAP50-95B": float(
-                    results_dict.get(
-                        "metrics/mAP50-95(B)",
-                        0.0
-                    )
-                ),
-                "precisionB": float(
-                    results_dict.get(
-                        "metrics/precision(B)",
-                        0.0
-                    )
-                ),
-                "recallB": float(
-                    results_dict.get(
-                        "metrics/recall(B)",
-                        0.0
-                    )
-                ),
-            })
+            mlflow.log_metrics(
+                {
+                    "mAP50B": float(results_dict.get("metrics/mAP50(B)", 0.0)),
+                    "mAP50-95B": float(results_dict.get("metrics/mAP50-95(B)", 0.0)),
+                    "precisionB": float(results_dict.get("metrics/precision(B)", 0.0)),
+                    "recallB": float(results_dict.get("metrics/recall(B)", 0.0)),
+                }
+            )
 
             mlflow.log_artifacts(str(run_dir))
 

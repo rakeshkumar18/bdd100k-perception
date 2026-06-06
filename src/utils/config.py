@@ -13,19 +13,13 @@ class ConfigManager:
 
     def __init__(self):
 
-        self.project_root = (
-            Path(__file__).resolve().parents[2]
-        )
+        self.project_root = Path(__file__).resolve().parents[2]
 
         env_path = self.project_root / ".env"
 
         load_dotenv(env_path)
 
-        config_path = (
-            self.project_root
-            / "configs"
-            / "dataset.yaml"
-        )
+        config_path = self.project_root / "configs" / "dataset.yaml"
 
         with open(config_path, "r") as file:
             self.config = yaml.safe_load(file)
@@ -42,6 +36,4 @@ class ConfigManager:
         if root:
             return root
 
-        raise ValueError(
-            "BDD100K_ROOT not found in .env"
-        )
+        raise ValueError("BDD100K_ROOT not found in .env")

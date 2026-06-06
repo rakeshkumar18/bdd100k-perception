@@ -11,34 +11,25 @@ class ClassStats:
         Count object instances per class
         """
 
-        counts = (
-            self.df["category"]
-            .value_counts()
-            .reset_index()
-        )
+        counts = self.df["category"].value_counts().reset_index()
 
         counts.columns = ["category", "count"]
 
         return counts
-    
+
     def class_distribution(self):
 
         counts = self.class_counts()
 
         total = counts["count"].sum()
 
-        counts["percentage"] = (
-            counts["count"] / total * 100
-        )
+        counts["percentage"] = counts["count"] / total * 100
 
         return counts
-    
+
     def top_classes(self, n=10):
 
-        return (
-            self.class_distribution()
-            .head(n)
-    )
+        return self.class_distribution().head(n)
 
     def rare_classes(self, threshold=0.5):
         """
@@ -47,15 +38,14 @@ class ClassStats:
 
         stats = self.class_distribution()
 
-        return stats[
-            stats["percentage"] < threshold
-        ]
+        return stats[stats["percentage"] < threshold]
+
     def imbalance_ratio(self):
 
         counts = self.class_counts()["count"]
 
         return counts.max() / counts.min()
-    
+
     def summary(self):
 
         stats = self.class_distribution()
@@ -67,5 +57,5 @@ class ClassStats:
             "largest_count": int(stats.iloc[0]["count"]),
             "smallest_class": stats.iloc[-1]["category"],
             "smallest_count": int(stats.iloc[-1]["count"]),
-            "imbalance_ratio": self.imbalance_ratio()
+            "imbalance_ratio": self.imbalance_ratio(),
         }

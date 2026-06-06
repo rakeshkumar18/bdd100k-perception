@@ -1,6 +1,4 @@
-from src.dataset.dataset_validator import (
-    DatasetValidator
-)
+from src.dataset.dataset_validator import DatasetValidator
 
 
 def main():
@@ -30,55 +28,27 @@ def main():
         print(split.upper())
         print("-" * 40)
 
-        pair_results = (
-            validator.validate_pairs(split)
-        )
+        pair_results = validator.validate_pairs(split)
 
-        print(
-            f"Missing labels: "
-            f"{len(pair_results['missing_labels'])}"
-        )
+        print(f"Missing labels: " f"{len(pair_results['missing_labels'])}")
 
-        print(
-            f"Missing images: "
-            f"{len(pair_results['missing_images'])}"
-        )
+        print(f"Missing images: " f"{len(pair_results['missing_images'])}")
 
-        corrupted = (
-            validator.validate_images(split)
-        )
+        corrupted = validator.validate_images(split)
 
-        print(
-            f"Corrupted images: "
-            f"{len(corrupted)}"
-        )
+        print(f"Corrupted images: " f"{len(corrupted)}")
 
-        empty_labels = (
-            validator.count_empty_labels(split)
-        )
+        empty_labels = validator.count_empty_labels(split)
 
-        print(
-            f"Empty labels: "
-            f"{len(empty_labels)}"
-        )
+        print(f"Empty labels: " f"{len(empty_labels)}")
 
-        invalid_format = (
-            validator.validate_label_format(split)
-        )
+        invalid_format = validator.validate_label_format(split)
 
-        print(
-            f"Invalid label rows: "
-            f"{len(invalid_format)}"
-        )
+        print(f"Invalid label rows: " f"{len(invalid_format)}")
 
-        invalid_boxes = (
-            validator.validate_bbox_ranges(split)
-        )
+        invalid_boxes = validator.validate_bbox_ranges(split)
 
-        print(
-            f"Invalid bbox ranges: "
-            f"{len(invalid_boxes)}"
-        )
+        print(f"Invalid bbox ranges: " f"{len(invalid_boxes)}")
 
     print("\n✓ Validation Complete")
 

@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class BBoxStats:
 
     def __init__(self, df):
@@ -13,27 +14,21 @@ class BBoxStats:
             "min_area": self.df["area"].min(),
             "max_area": self.df["area"].max(),
         }
+
     def size_distribution(self):
 
         bins = [0, 32**2, 96**2, float("inf")]
 
-        labels = [
-            "small",
-            "medium",
-            "large"
-        ]
+        labels = ["small", "medium", "large"]
 
-        sizes = pd.cut(
-            self.df["area"],
-            bins=bins,
-            labels=labels
-        )
+        sizes = pd.cut(self.df["area"], bins=bins, labels=labels)
 
         return sizes.value_counts()
+
     def aspect_ratio_summary(self):
 
         return {
             "mean": self.df["aspect_ratio"].mean(),
             "median": self.df["aspect_ratio"].median(),
-            "std": self.df["aspect_ratio"].std()
+            "std": self.df["aspect_ratio"].std(),
         }

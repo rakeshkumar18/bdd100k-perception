@@ -9,10 +9,7 @@ def extract_detections(result):
         detections.append(
             {
                 "class": result.names[cls_id],
-                "confidence": round(
-                    float(box.conf.item()),
-                    3
-                )
+                "confidence": round(float(box.conf.item()), 3),
             }
         )
 

@@ -5,10 +5,7 @@ def plot_class_distribution(df, save_path):
 
     plt.figure(figsize=(12, 6))
 
-    plt.bar(
-        df["category"],
-        df["count"]
-    )
+    plt.bar(df["category"], df["count"])
 
     plt.xticks(rotation=45)
 
@@ -18,14 +15,12 @@ def plot_class_distribution(df, save_path):
 
     plt.close()
 
+
 def plot_bbox_area_histogram(df, save_path):
 
-    plt.figure(figsize=(10,6))
+    plt.figure(figsize=(10, 6))
 
-    plt.hist(
-        df["area"],
-        bins=50
-    )
+    plt.hist(df["area"], bins=50)
 
     plt.xlabel("Bounding Box Area")
     plt.ylabel("Frequency")
@@ -35,18 +30,12 @@ def plot_bbox_area_histogram(df, save_path):
     plt.savefig(save_path)
     plt.close()
 
-def plot_bbox_area_log_histogram(
-    df,
-    save_path
-):
 
-    plt.figure(figsize=(10,6))
+def plot_bbox_area_log_histogram(df, save_path):
 
-    plt.hist(
-        df["area"],
-        bins=50,
-        log=True
-    )
+    plt.figure(figsize=(10, 6))
+
+    plt.hist(df["area"], bins=50, log=True)
 
     plt.xlabel("Bounding Box Area")
     plt.ylabel("Frequency (log)")
@@ -56,17 +45,12 @@ def plot_bbox_area_log_histogram(
     plt.savefig(save_path)
     plt.close()
 
-def plot_aspect_ratio_histogram(
-    df,
-    save_path
-):
 
-    plt.figure(figsize=(10,6))
+def plot_aspect_ratio_histogram(df, save_path):
 
-    plt.hist(
-        df["aspect_ratio"],
-        bins=50
-    )
+    plt.figure(figsize=(10, 6))
+
+    plt.hist(df["aspect_ratio"], bins=50)
 
     plt.xlabel("Aspect Ratio")
     plt.ylabel("Count")
@@ -76,50 +60,30 @@ def plot_aspect_ratio_histogram(
     plt.close()
 
 
+def plot_occlusion_distribution(df, save_path):
 
-def plot_occlusion_distribution(
-    df,
-    save_path
-):
-
-    counts = (
-        df["occluded"]
-        .value_counts()
-    )
+    counts = df["occluded"].value_counts()
 
     plt.figure(figsize=(6, 6))
 
-    plt.pie(
-        counts,
-        labels=["Visible", "Occluded"],
-        autopct="%1.1f%%"
-    )
+    plt.pie(counts, labels=["Visible", "Occluded"], autopct="%1.1f%%")
 
-    plt.title(
-        "Occlusion Distribution"
-    )
+    plt.title("Occlusion Distribution")
 
     plt.savefig(save_path)
 
     plt.close()
 
-def plot_occlusion_by_class(
-    occlusion_df,
-    save_path
-):
+
+def plot_occlusion_by_class(occlusion_df, save_path):
 
     plt.figure(figsize=(12, 6))
 
-    plt.bar(
-        occlusion_df["category"],
-        occlusion_df["occluded"]
-    )
+    plt.bar(occlusion_df["category"], occlusion_df["occluded"])
 
     plt.xticks(rotation=45)
 
-    plt.ylabel(
-        "Occlusion Percentage"
-    )
+    plt.ylabel("Occlusion Percentage")
 
     plt.tight_layout()
 
@@ -128,20 +92,11 @@ def plot_occlusion_by_class(
     plt.close()
 
 
-def plot_category_distribution(
-    df,
-    category_col,
-    count_col,
-    title,
-    save_path
-):
+def plot_category_distribution(df, category_col, count_col, title, save_path):
 
     plt.figure(figsize=(12, 6))
 
-    plt.bar(
-        df[category_col],
-        df[count_col]
-    )
+    plt.bar(df[category_col], df[count_col])
 
     plt.xticks(rotation=45)
 
@@ -153,12 +108,8 @@ def plot_category_distribution(
 
     plt.close()
 
-def plot_train_val_comparison(
-    df,
-    category_col,
-    save_path,
-    title
-):
+
+def plot_train_val_comparison(df, category_col, save_path, title):
 
     import matplotlib.pyplot as plt
     import numpy as np
@@ -167,27 +118,13 @@ def plot_train_val_comparison(
 
     width = 0.4
 
-    plt.figure(figsize=(12,6))
+    plt.figure(figsize=(12, 6))
 
-    plt.bar(
-        x - width/2,
-        df["train_pct"],
-        width,
-        label="Train"
-    )
+    plt.bar(x - width / 2, df["train_pct"], width, label="Train")
 
-    plt.bar(
-        x + width/2,
-        df["val_pct"],
-        width,
-        label="Validation"
-    )
+    plt.bar(x + width / 2, df["val_pct"], width, label="Validation")
 
-    plt.xticks(
-        x,
-        df[category_col],
-        rotation=45
-    )
+    plt.xticks(x, df[category_col], rotation=45)
 
     plt.legend()
 

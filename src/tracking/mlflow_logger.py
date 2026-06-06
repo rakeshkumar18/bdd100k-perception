@@ -8,19 +8,11 @@ class MLflowLogger:
 
         tracking_db = Path("outputs/mlflow/mlflow.db")
 
-        tracking_db.parent.mkdir(
-            parents=True,
-            exist_ok=True
-        )
+        tracking_db.parent.mkdir(parents=True, exist_ok=True)
 
-        mlflow.set_tracking_uri(
-            f"sqlite:///{tracking_db.resolve()}"
-        )
+        mlflow.set_tracking_uri(f"sqlite:///{tracking_db.resolve()}")
 
-        print(
-            "MLflow Tracking URI:",
-            mlflow.get_tracking_uri()
-        )
+        print("MLflow Tracking URI:", mlflow.get_tracking_uri())
 
         mlflow.set_experiment(experiment_name)
 

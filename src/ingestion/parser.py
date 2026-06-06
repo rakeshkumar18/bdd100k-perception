@@ -10,17 +10,11 @@ from src.ingestion.schema import (
 
 class BDDParser:
 
-    def load_directory(
-        self,
-        label_dir: Path,
-        max_files=None
-    ):
+    def load_directory(self, label_dir: Path, max_files=None):
 
         scenes = []
 
-        json_files = sorted(
-            label_dir.glob("*.json")
-        )
+        json_files = sorted(label_dir.glob("*.json"))
 
         if max_files:
             json_files = json_files[:max_files]
@@ -35,9 +29,7 @@ class BDDParser:
 
             except Exception as e:
 
-                print(
-                    f"Skipping {file}: {e}"
-                )
+                print(f"Skipping {file}: {e}")
 
         return scenes
 
@@ -51,10 +43,7 @@ class BDDParser:
 
     def parse_scene(self, data):
 
-        attrs = data.get(
-            "attributes",
-            {}
-        )
+        attrs = data.get("attributes", {})
 
         frame = data["frames"][0]
 
@@ -65,24 +54,13 @@ class BDDParser:
             if "box2d" not in obj:
                 continue
 
-            objects.append(
-                self.parse_object(obj)
-            )
+            objects.append(self.parse_object(obj))
 
         return SceneAnnotation(
             image_name=data["name"],
-            weather=attrs.get(
-                "weather",
-                "unknown"
-            ),
-            scene=attrs.get(
-                "scene",
-                "unknown"
-            ),
-            timeofday=attrs.get(
-                "timeofday",
-                "unknown"
-            ),
+            weather=attrs.get("weather", "unknown"),
+            scene=attrs.get("scene", "unknown"),
+            timeofday=attrs.get("timeofday", "unknown"),
             objects=objects,
         )
 
@@ -90,10 +68,7 @@ class BDDParser:
 
         bbox = obj["box2d"]
 
-        attributes = obj.get(
-            "attributes",
-            {}
-        )
+        attributes = obj.get("attributes", {})
 
         return ObjectAnnotation(
             category=obj["category"],
@@ -103,12 +78,6 @@ class BDDParser:
                 x2=bbox["x2"],
                 y2=bbox["y2"],
             ),
-            occluded=attributes.get(
-                "occluded",
-                False
-            ),
-            truncated=attributes.get(
-                "truncated",
-                False
-            ),
+            occluded=attributes.get("occluded", False),
+            truncated=attributes.get("truncated", False),
         )

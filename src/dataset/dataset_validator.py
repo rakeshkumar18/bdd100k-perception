@@ -47,21 +47,13 @@ class DatasetValidator:
         image_dir = self.SPLITS[split]["images"]
         label_dir = self.SPLITS[split]["labels"]
 
-        image_names = {
-            p.stem
-            for p in image_dir.glob("*.jpg")
-        }
+        image_names = {p.stem for p in image_dir.glob("*.jpg")}
 
-        label_names = {
-            p.stem
-            for p in label_dir.glob("*.txt")
-        }
+        label_names = {p.stem for p in label_dir.glob("*.txt")}
 
         return {
-            "missing_labels":
-                image_names - label_names,
-            "missing_images":
-                label_names - image_names,
+            "missing_labels": image_names - label_names,
+            "missing_images": label_names - image_names,
         }
 
     def validate_images(self, split):
@@ -147,10 +139,7 @@ class DatasetValidator:
                         h = float(values[4])
 
                         if not (
-                            0 <= x <= 1 and
-                            0 <= y <= 1 and
-                            0 <= w <= 1 and
-                            0 <= h <= 1
+                            0 <= x <= 1 and 0 <= y <= 1 and 0 <= w <= 1 and 0 <= h <= 1
                         ):
                             invalid_boxes.append(
                                 (

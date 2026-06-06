@@ -21,3 +21,5 @@ mlruns/
 .DS_Store
 
 *.egg-info/
+
+*.csv

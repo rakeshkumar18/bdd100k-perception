@@ -181,35 +181,27 @@ Containerized deployment using:
 ## Project Structure
 
 ```text
+.
 ├── Dockerfile
 ├── Project_Readme.md
 ├── README.md
 ├── configs
 │   ├── dataset.yaml
-│   ├── evaluation.yaml
 │   ├── training.yaml
 │   └── yolo_dataset.yaml
 ├── docker-compose.yml
 ├── mlflow.db
-├── mlruns
-│   └── 1
-│       └── c78fba05f4714fcdb27cd5374ce097d7
-│           └── artifacts
 ├── outputs
 │   ├── figures
 │   ├── mlflow
-│   │   └── mlflow.db
 │   ├── predictions
-│   ├── processed
 │   └── reports
+├── pyproject.toml
 ├── pytest.ini
+├── requirements-dev.txt
 ├── requirements.txt
 ├── runs
 │   └── detect
-│       ├── outputs
-│       │   └── training
-│       ├── val
-│       └── val-2
 ├── scripts
 │   ├── __init__.py
 │   ├── analyze_dataset.py
@@ -217,10 +209,8 @@ Containerized deployment using:
 │   ├── check_runs.py
 │   ├── convert_to_yolo.py
 │   ├── evaluate.py
-│   ├── evaluate_model.py
 │   ├── get_best_model.py
 │   ├── inspect_label.py
-│   ├── launch_dashboard.py
 │   ├── predict.py
 │   ├── test_paths.py
 │   ├── train_yolo.py
@@ -228,67 +218,17 @@ Containerized deployment using:
 ├── setup.py
 ├── src
 │   ├── __init__.py
+│   ├── __pycache__
 │   ├── analysis
-│   │   ├── __init__.py
-│   │   ├── bbox_stats.py
-│   │   ├── class_stats.py
-│   │   ├── occlusion_stats.py
-│   │   ├── scene_stats.py
-│   │   └── train_val_comparison.py
 │   ├── dashboard
-│   │   ├── __init__.py
-│   │   ├── app.py
-│   │   ├── mlflow_client.py
-│   │   └── visualizations.py
 │   ├── dataset
-│   │   ├── __init__.py
-│   │   ├── bdd_loader.py
-│   │   ├── class_map.py
-│   │   ├── collate_fn.py
-│   │   ├── dataset_validator.py
-│   │   ├── transforms.py
-│   │   ├── yolo_converter.py
-│   │   └── yolo_yaml.py
 │   ├── evaluation
-│   │   ├── __init__.py
-│   │   ├── confusion_matrix.py
-│   │   ├── evaluator.py
-│   │   ├── failure_analysis.py
-│   │   ├── metrics.py
-│   │   └── visualize.py
 │   ├── inference
-│   │   ├── __pycache__
-│   │   ├── batch_predict.py
-│   │   ├── predictor.py
-│   │   ├── utils.py
-│   │   └── visualize.py
 │   ├── ingestion
-│   │   ├── __init__.py
-│   │   ├── dataframe_builder.py
-│   │   ├── parser.py
-│   │   └── schema.py
 │   ├── model_registry
-│   │   └── model_registry.py
-│   ├── models
-│   │   ├── __init__.py
-│   │   ├── rt_detr.py
-│   │   └── yolo.py
 │   ├── tracking
-│   │   ├── __init__.py
-│   │   └── mlflow_logger.py
 │   ├── training
-│   │   ├── __init__.py
-│   │   ├── config.py
-│   │   ├── train.py
-│   │   └── trainer.py
 │   └── utils
-│       ├── __init__.py
-│       ├── config.py
-│       ├── constants.py
-│       ├── file_utils.py
-│       ├── logger.py
-│       ├── paths.py
-│       └── plotting.py
 ├── tests
 │   ├── test.py
 │   ├── test_dataframe_builder.py
@@ -326,7 +266,7 @@ python -m scripts.analyze_dataset
 ```
 ### This will genearte the figure and csv for EDA analysis.
 ---
-## Training
+## Training (for training keep the train and val data at the root of bdd100k-perception folder)
 
 ```bash
 python -m scripts.train_yolo

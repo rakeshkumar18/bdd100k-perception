@@ -20,9 +20,6 @@ mlruns/
 # Mac
 .DS_Store
 
-
-reports/
-
 *.csv
 
 *.egg-info/

@@ -191,6 +191,20 @@ Containerized deployment using:
 │   └── yolo_dataset.yaml
 ├── docker-compose.yml
 ├── mlflow.db
+├── notebook
+│   ├── analyze_dataset.ipynb
+│   ├── docs
+│   │   ├── 02_yolov8_architecture.md
+│   │   ├── 03_yolov8_training_and_loss_functions.md
+│   │   ├── 04_object_detection_metrics.md
+│   │   ├── 06_failure_analysis.md
+│   │   └── 01_data_analysis.md
+│   ├── outputs
+│   │   ├── figures
+│   │   └── reports
+│   ├── runs
+│   │   └── detect
+│   └── yolo_feature_visualization.ipynb
 ├── outputs
 │   ├── figures
 │   ├── mlflow
@@ -266,7 +280,7 @@ python -m scripts.analyze_dataset
 ```
 ### This will genearte the figure and csv for EDA analysis.
 ---
-## Training (for training keep the train and val data at the root of bdd100k-perception folder)
+## Training (for training keep the train and val data at the root of bdd100k-perception folder) Already trained weight are present, no need to train the model to see the analysis
 
 ```bash
 python -m scripts.train_yolo
@@ -278,7 +292,7 @@ python -m scripts.train_yolo
 ## Evaluation
 
 ```bash
-python -m scripts.evaluate_model
+python -m scripts.evaluate
 ```
 
 ---

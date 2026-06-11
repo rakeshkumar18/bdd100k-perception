@@ -1,0 +1,64 @@
+# ==============================================================================
+# YOLO Training Configuration
+# ==============================================================================
+#
+# This file contains training, hardware, experiment, and augmentation settings
+# for YOLO object detection training on the BDD100K dataset.
+#
+# ==============================================================================
+
+training:
+  # Number of training epochs.
+  epochs: 5
+
+  # Batch size used during training.
+  batch: 16
+
+  # Input image resolution.
+  imgsz: 640
+
+  # fraction of training data to use (0.0 to 1.0).
+  fraction: 0.4
+
+hardware:
+  # Device to use: cpu, cuda, or mps (Apple Silicon).
+  device: mps
+
+  # Number of dataloader worker processes.
+  workers: 12
+
+  # Cache dataset images in memory for faster training.
+  cache: true
+
+experiment:
+  # Directory where Ultralytics stores training outputs.
+  project: outputs/training
+
+  # Name of the training run.
+  run_name: yolov8n_bdd100k
+
+  # MLflow experiment name.
+  experiment_name: BDD100K_YOLO
+
+reproducibility:
+  seed: 42
+augmentation:
+  # Hue augmentation factor.
+  hsv_h: 0.015
+
+  # Saturation augmentation factor.
+  hsv_s: 0.7
+
+  # Brightness augmentation factor.
+  hsv_v: 0.4
+
+  # Random rotation range in degrees.
+  degrees: 0.0
+
+  # Random translation factor.
+  translate: 0.1
+  # Random image scaling factor.
+  scale: 0.5
+
+  # Probability of horizontal flip.
+  fliplr: 0.5

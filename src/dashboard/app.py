@@ -13,12 +13,38 @@ from src.inference.predictor import YOLOPredictor
 from src.inference.utils import extract_detections
 from src.inference.visualize import get_annotated_image
 
+def get_best_run(runs):
+
+    runs = runs.copy()
+
+    metric_col = get_metric_column(
+        runs,
+        "mAP50B",
+    )
+
+    runs["mAP50"] = metric_col
+
+    runs = runs.dropna(
+        subset=["mAP50"]
+    )
+
+    return runs.loc[
+        runs["mAP50"].idxmax()
+    ]
 
 @st.cache_resource
-def load_predictor() -> YOLOPredictor:
-    """Load and cache the YOLO predictor for dashboard inference."""
+def load_predictor():
+
+    client = MLflowClient()
+
+    best_run = client.get_best_run()
+
+    model_path = best_run[
+        "tags.best_model_path"
+    ]
+
     return YOLOPredictor(
-        model_path="runs/detect/outputs/training/yolov8n_bdd100k/weights/best.pt"
+        model_path=model_path
     )
 
 
@@ -140,14 +166,14 @@ if page == "Training Dashboard":
     if runs.empty:
         st.warning("No runs found")
     else:
-        latest_run = get_latest_valid_run(runs)
+        best_run = get_best_run(runs)
 
         c1, c2, c3, c4 = st.columns(4)
 
-        map50 = get_metric(latest_run, "mAP50B")
-        map5095 = get_metric(latest_run, "mAP50-95B")
-        precision = get_metric(latest_run, "precisionB")
-        recall = get_metric(latest_run, "recallB")
+        map50 = get_metric(best_run, "mAP50B")
+        map5095 = get_metric(best_run, "mAP50-95B")
+        precision = get_metric(best_run, "precisionB")
+        recall = get_metric(best_run, "recallB")
 
         c1.metric("mAP50", f"{map50:.3f}" if map50 is not None else "N/A")
         c2.metric("mAP50-95", f"{map5095:.3f}" if map5095 is not None else "N/A")
@@ -496,13 +522,13 @@ elif page == "Evaluation":
     if runs.empty:
         st.warning("No runs found")
     else:
-        latest_run = get_latest_valid_run(runs)
+        best_run = get_best_run(runs)
 
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("mAP50", f"{get_metric(latest_run, 'mAP50B'):.3f}")
-        c2.metric("mAP50-95", f"{get_metric(latest_run, 'mAP50-95B'):.3f}")
-        c3.metric("Precision", f"{get_metric(latest_run, 'precisionB'):.3f}")
-        c4.metric("Recall", f"{get_metric(latest_run, 'recallB'):.3f}")
+        c1.metric("mAP50", f"{get_metric(best_run, 'mAP50B'):.3f}")
+        c2.metric("mAP50-95", f"{get_metric(best_run, 'mAP50-95B'):.3f}")
+        c3.metric("Precision", f"{get_metric(best_run, 'precisionB'):.3f}")
+        c4.metric("Recall", f"{get_metric(best_run, 'recallB'):.3f}")
 
     st.divider()
     st.subheader("Confusion Matrix")

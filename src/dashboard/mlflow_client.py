@@ -19,3 +19,20 @@ class MLflowClient:
         runs = mlflow.search_runs(experiment_ids=[exp.experiment_id])
 
         return runs
+
+    def get_best_run(
+        self,
+        experiment_name="BDD100K_YOLO"
+    ):
+
+        runs = self.get_runs(
+            experiment_name
+        )
+
+        runs = runs.dropna(
+            subset=["metrics.mAP50B"]
+        )
+
+        return runs.loc[
+            runs["metrics.mAP50B"].idxmax()
+        ]

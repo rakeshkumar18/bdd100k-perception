@@ -11,6 +11,7 @@ from typing import Any
 
 import mlflow
 
+from src.utils.paths import MLFLOW_DIR, MLFLOW_TRACKING_URI
 
 class MLflowLogger:
     """Manage MLflow experiment configuration and logging."""
@@ -20,33 +21,45 @@ class MLflowLogger:
         experiment_name: str,
         tracking_uri: str | None = None,
     ) -> None:
-        """
-        Initialize the MLflow tracking backend and experiment.
 
-        Args:
-            experiment_name:
-                Name of the MLflow experiment.
+        MLFLOW_DIR.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
-            tracking_uri:
-                Optional MLflow tracking URI. If not provided,
-                a local SQLite database is created under
-                outputs/mlflow/mlflow.db.
-        """
         if tracking_uri is None:
-            tracking_db = Path("outputs/mlflow/mlflow.db")
+            tracking_uri = MLFLOW_TRACKING_URI
 
-            tracking_db.parent.mkdir(
-                parents=True,
-                exist_ok=True,
+        mlflow.set_tracking_uri(
+            tracking_uri
+        )
+
+        artifact_root = (
+            MLFLOW_DIR / "artifacts"
+        ).resolve()
+
+        artifact_root.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        experiment = (
+            mlflow.get_experiment_by_name(
+                experiment_name
+            )
+        )
+
+        if experiment is None:
+            mlflow.create_experiment(
+                name=experiment_name,
+                artifact_location=(
+                    f"file://{artifact_root}"
+                ),
             )
 
-            tracking_uri = (
-                f"sqlite:///{tracking_db.resolve()}"
-            )
-
-        mlflow.set_tracking_uri(tracking_uri)
-
-        mlflow.set_experiment(experiment_name)
+        mlflow.set_experiment(
+            experiment_name
+        )
 
     @staticmethod
     def start_run(
@@ -67,6 +80,7 @@ class MLflowLogger:
         Returns:
             Active MLflow run.
         """
+
         return mlflow.start_run(
             run_name=run_name,
             nested=nested,
@@ -83,6 +97,7 @@ class MLflowLogger:
             params:
                 Dictionary of parameter names and values.
         """
+
         mlflow.log_params(params)
 
     @staticmethod
@@ -96,6 +111,7 @@ class MLflowLogger:
             metrics:
                 Dictionary of metric names and values.
         """
+
         mlflow.log_metrics(metrics)
 
     @staticmethod
@@ -109,7 +125,10 @@ class MLflowLogger:
             directory:
                 Directory containing artifacts.
         """
-        mlflow.log_artifacts(str(directory))
+
+        mlflow.log_artifacts(
+            str(directory)
+        )
 
     @staticmethod
     def set_tag(
@@ -126,7 +145,11 @@ class MLflowLogger:
             value:
                 Tag value.
         """
-        mlflow.set_tag(key, value)
+
+        mlflow.set_tag(
+            key,
+            value,
+        )
 
     @staticmethod
     def set_tags(
@@ -139,4 +162,7 @@ class MLflowLogger:
             tags:
                 Dictionary of tag names and values.
         """
-        mlflow.set_tags(tags)
+
+        mlflow.set_tags(
+            tags
+        )

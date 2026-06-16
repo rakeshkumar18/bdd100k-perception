@@ -60,9 +60,15 @@ class DataFrameBuilder:
             df["aspect_ratio"] = df["width"] / df["height"]
 
         if invalid_rows:
+            from src.utils.paths import REPORT_DIR
+
             invalid_df = pd.DataFrame(invalid_rows)
             print(f"[WARN] Invalid boxes found: {len(invalid_rows)}")
-            invalid_df.to_csv("outputs/reports/invalid_boxes.csv", index=True)
+
+            output_path = REPORT_DIR / "invalid_boxes.csv"
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            invalid_df.to_csv(output_path, index=True)
 
         return df
 

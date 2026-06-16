@@ -1,11 +1,10 @@
 """
-Train a YOLO model on BDD100K.
+Train a YOLO model on the BDD100K dataset.
 """
 
 import argparse
 import time
 
-from datetime import datetime
 from ultralytics import settings
 
 from src.training.seed import set_seed
@@ -19,10 +18,10 @@ settings.update({"mlflow": False})
 
 def parse_args() -> argparse.Namespace:
     """
-    Parse CLI arguments.
+    Parse command-line arguments.
 
     Returns:
-        Parsed arguments.
+        Parsed CLI arguments.
     """
 
     parser = argparse.ArgumentParser(
@@ -30,9 +29,16 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--config",
+        type=str,
+        default="configs/training.yaml",
+        help="Path to training configuration file.",
+    )
+
+    parser.add_argument(
         "--epochs",
         type=int,
-        help="Override training epochs.",
+        help="Override number of training epochs.",
     )
 
     parser.add_argument(
@@ -48,9 +54,21 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--fraction",
+        type=float,
+        help="Override training data fraction.",
+    )
+
+    parser.add_argument(
         "--model",
         type=str,
         help="YOLO model checkpoint.",
+    )
+
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume a previous training run.",
     )
 
     return parser.parse_args()
@@ -58,34 +76,49 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     """
-    Execute training workflow.
+    Execute YOLO training workflow.
     """
 
     args = parse_args()
 
     config = load_training_config()
 
-    if args.epochs:
+    # ==========================================================
+    # CLI overrides
+    # ==========================================================
+
+    if args.epochs is not None:
         config.epochs = args.epochs
 
-    if args.batch:
+    if args.batch is not None:
         config.batch = args.batch
 
-    if args.imgsz:
+    if args.imgsz is not None:
         config.imgsz = args.imgsz
 
-    if args.model:
+    if args.fraction is not None:
+        config.fraction = args.fraction
+
+    if args.model is not None:
         config.model_name = args.model
 
-    set_seed(config.seed)
+    config.resume = args.resume
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # ==========================================================
+    # Reproducibility
+    # ==========================================================
 
-    config.run_name = (
-        f"{config.run_name}_{timestamp}"
+    set_seed(
+        config.seed
     )
 
-    trainer = YOLOTrainer(config)
+    # ==========================================================
+    # Training setup
+    # ==========================================================
+
+    trainer = YOLOTrainer(
+        config=config
+    )
 
     logger = MLflowLogger(
         experiment_name=config.experiment_name,
@@ -93,20 +126,55 @@ def main() -> None:
 
     tracker = YOLOMLflowTracker()
 
+    print("\n========== TRAINING CONFIG ==========")
+    print(f"Model      : {config.model_name}")
+    print(f"Epochs     : {config.epochs}")
+    print(f"Batch      : {config.batch}")
+    print(f"Image Size : {config.imgsz}")
+    print(f"Fraction   : {config.fraction}")
+    print(f"Device     : {config.device}")
+    print(f"Workers    : {config.workers}")
+    print(f"Cache      : {config.cache}")
+    print(f"Run Name   : {config.run_name}")
+    print("=====================================\n")
+
     with logger.start_run(
         run_name=config.run_name,
     ):
-        start_time = time.time()
+        try:
+            start_time = time.time()
 
-        results = trainer.train()
+            results = trainer.train()
 
-        training_time = time.time() - start_time
+            training_time = (
+                time.time() - start_time
+            )
 
-        tracker.log_run(
-            config=config,
-            results=results,
-            training_time=training_time,
-        )
+            tracker.log_run(
+                config=config,
+                results=results,
+                training_time=training_time,
+            )
+
+            logger.set_tag(
+                "training_status",
+                "completed",
+            )
+
+            print(
+                f"\nTraining completed in "
+                f"{training_time:.2f} seconds."
+            )
+
+        except Exception as exc:
+            logger.set_tags(
+                {
+                    "training_status": "failed",
+                    "error": str(exc),
+                }
+            )
+
+            raise
 
 
 if __name__ == "__main__":

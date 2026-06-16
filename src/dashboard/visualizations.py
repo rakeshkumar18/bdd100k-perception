@@ -5,52 +5,73 @@ import plotly.express as px
 from plotly.graph_objects import Figure
 
 
-def metric_bar_chart(df: pd.DataFrame, metric: str) -> Figure:
-    """Create a bar chart for a selected run-level metric.
+def create_metric_chart(
+    df: pd.DataFrame,
+) -> Figure:
 
-    Args:
-        df: DataFrame containing MLflow run data.
-        metric: Column name of the metric to visualize.
-
-    Returns:
-        A Plotly bar chart showing the metric value for each run.
-    """
-    return px.bar(df, x="run_id", y=metric, title=metric)
-
-
-def create_loss_chart(df: pd.DataFrame) -> Figure:
-    """Create a bar chart summarizing available training and validation losses.
-
-    Args:
-        df: DataFrame containing run metrics.
-
-    Returns:
-        A Plotly bar chart of all available loss values.
-
-    Raises:
-        ValueError: If no expected loss columns are present in the DataFrame.
-    """
-    loss_cols = [
-        "metrics.train/box_loss",
-        "metrics.train/cls_loss",
-        "metrics.train/dfl_loss",
-        "metrics.val/box_loss",
-        "metrics.val/cls_loss",
-        "metrics.val/dfl_loss",
+    metric_columns = [
+        "metrics/precision(B)",
+        "metrics/recall(B)",
+        "metrics/mAP50(B)",
+        "metrics/mAP50-95(B)",
     ]
-    available_loss_cols = [column for column in loss_cols if column in df.columns]
 
-    if not available_loss_cols:
-        raise ValueError("No training or validation loss columns found in DataFrame.")
+    available = [
+        col
+        for col in metric_columns
+        if col in df.columns
+    ]
 
-    melted = df[available_loss_cols].melt(
-        var_name="Loss",
-        value_name="Value",
+    fig = px.line(
+        df,
+        x="epoch",
+        y=available,
+        title="Validation Metrics",
     )
 
-    return px.bar(
-        melted,
-        x="Loss",
-        y="Value",
-        title="Training & Validation Losses",
+    return fig
+
+def create_loss_chart(
+    df: pd.DataFrame,
+) -> Figure:
+    """
+    Create YOLO training curve visualization
+    from results.csv.
+    """
+
+    loss_columns = [
+        "train/box_loss",
+        "train/cls_loss",
+        "train/dfl_loss",
+        "val/box_loss",
+        "val/cls_loss",
+        "val/dfl_loss",
+    ]
+
+    available = [
+        col
+        for col in loss_columns
+        if col in df.columns
+    ]
+
+    if not available:
+        raise ValueError(
+            f"No YOLO loss columns found.\n"
+            f"Available columns: {list(df.columns)}"
+        )
+
+    fig = px.line(
+        df,
+        x="epoch",
+        y=available,
+        title="Training & Validation Loss Curves",
     )
+
+    fig.update_layout(
+        xaxis_title="Epoch",
+        yaxis_title="Loss",
+        legend_title="Metric",
+        height=600,
+    )
+
+    return fig

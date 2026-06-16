@@ -1,4 +1,4 @@
-dataset_root: "../datasets/bdd100k"
+dataset_root: ../datasets/bdd100k
 
 dataset:
 
@@ -9,10 +9,12 @@ dataset:
   val_labels: "labels/100k/val"
 
 analysis:
-
-  reports_dir: "outputs/reports"
-  figures_dir: "outputs/figures"
+  reports_dir: "reports"
+  figures_dir: "figures"
+  training_runs_dir: "training_runs"
+  mlflow_dir: "mlflow"
+  predictions_dir: "predictions"
 
 processed:
 
-  processed_dir: "outputs/processed"
+  processed_dir: "processed"

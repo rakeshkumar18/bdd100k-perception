@@ -1,42 +1,56 @@
-"""
-Centralized Path Management
-"""
+"""Centralized, immutable project path registry."""
 
 from pathlib import Path
 from src.utils.config import ConfigManager
 
 cfg = ConfigManager()
-CONFIG = cfg.get()
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# ---------------------------
+# ROOTS
+# ---------------------------
+PROJECT_ROOT = cfg.project_root
+DATASET_ROOT = cfg.dataset_root
+CONFIG = cfg.config
 
-DATASET_ROOT = (PROJECT_ROOT / CONFIG["dataset_root"]).resolve()
+# ---------------------------
+# DATASET PATHS
+# ---------------------------
+DS = CONFIG["dataset"]
 
-TRAIN_IMAGES = DATASET_ROOT / CONFIG["dataset"]["train_images"]
-VAL_IMAGES = DATASET_ROOT / CONFIG["dataset"]["val_images"]
+TRAIN_IMAGES = DATASET_ROOT / DS["train_images"]
+VAL_IMAGES   = DATASET_ROOT / DS["val_images"]
 
-TRAIN_LABELS = DATASET_ROOT / CONFIG["dataset"]["train_labels"]
-VAL_LABELS = DATASET_ROOT / CONFIG["dataset"]["val_labels"]
+TRAIN_LABELS = DATASET_ROOT / DS["train_labels"]
+VAL_LABELS   = DATASET_ROOT / DS["val_labels"]
 
-REPORT_DIR = PROJECT_ROOT / CONFIG["analysis"]["reports_dir"]
-FIGURE_DIR = PROJECT_ROOT / CONFIG["analysis"]["figures_dir"]
-PROCESSED_DIR = PROJECT_ROOT / CONFIG["processed"]["processed_dir"]
+# ---------------------------
+# OUTPUT ROOTS
+# ---------------------------
+ANALYSIS = CONFIG["analysis"]
+PROCESSED = CONFIG["processed"]
 
-for directory in (REPORT_DIR, FIGURE_DIR, PROCESSED_DIR):
-    directory.mkdir(parents=True, exist_ok=True)
+OUTPUT_ROOT = PROJECT_ROOT / "outputs"
 
+REPORTS_DIR    = OUTPUT_ROOT / ANALYSIS["reports_dir"]
+FIGURES_DIR    = OUTPUT_ROOT / ANALYSIS["figures_dir"]
+PROCESSED_DIR = OUTPUT_ROOT / PROCESSED["processed_dir"]
+TRAINING_RUNS_DIR = OUTPUT_ROOT / ANALYSIS["training_runs_dir"]
+MLFLOW_DIR = OUTPUT_ROOT / ANALYSIS["mlflow_dir"]
+PREDICTIONS_DIR = OUTPUT_ROOT / ANALYSIS["predictions_dir"]
 
-def validate_required_paths() -> None:
-    """Validate all required dataset paths before analysis starts."""
-    required_paths = [
-        DATASET_ROOT,
-        TRAIN_IMAGES,
-        VAL_IMAGES,
-        TRAIN_LABELS,
-        VAL_LABELS,
-    ]
+MLFLOW_DB = (
+    MLFLOW_DIR / "mlflow.db"
+)
 
-    missing = [path for path in required_paths if not path.exists()]
-    if missing:
-        missing_str = "\n".join(str(path) for path in missing)
-        raise FileNotFoundError(f"Missing required paths:\n{missing_str}")
+MLFLOW_TRACKING_URI = (
+    f"sqlite:///{MLFLOW_DB.resolve()}"
+)
+
+# ---------------------------
+# ENSURE DIRECTORIES EXIST
+# ---------------------------
+def init_dirs():
+    for p in (REPORTS_DIR, FIGURES_DIR, PROCESSED_DIR):
+        p.mkdir(parents=True, exist_ok=True)
+
+init_dirs()

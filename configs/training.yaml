@@ -9,7 +9,7 @@
 
 training:
   # Number of training epochs.
-  epochs: 5
+  epochs: 2
 
   # Batch size used during training.
   batch: 16
@@ -18,21 +18,23 @@ training:
   imgsz: 640
 
   # fraction of training data to use (0.0 to 1.0).
-  fraction: 0.4
+  fraction: 1
+
+  # resume training from a previous checkpoint (True/False).
+  resume: true
 
 hardware:
   # Device to use: cpu, cuda, or mps (Apple Silicon).
   device: mps
 
   # Number of dataloader worker processes.
-  workers: 12
+  workers: 4
 
   # Cache dataset images in memory for faster training.
   cache: true
 
 experiment:
-  # Directory where Ultralytics stores training outputs.
-  project: outputs/training
+  output_dir: outputs/training_runs
 
   # Name of the training run.
   run_name: yolov8n_bdd100k

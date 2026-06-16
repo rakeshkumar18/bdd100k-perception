@@ -39,6 +39,7 @@ def load_training_config() -> TrainingConfig:
         batch=train_cfg["training"]["batch"],
         imgsz=train_cfg["training"]["imgsz"],
         fraction=train_cfg["training"]["fraction"],
+        resume=train_cfg["training"]["resume"],
         # Hardware
         device=train_cfg["hardware"]["device"],
         workers=train_cfg["hardware"]["workers"],
@@ -48,7 +49,7 @@ def load_training_config() -> TrainingConfig:
         seed=train_cfg["reproducibility"]["seed"],
 
         # Experiment
-        project=train_cfg["experiment"]["project"],
+        output_dir=train_cfg["experiment"]["output_dir"],
         run_name=train_cfg["experiment"]["run_name"],
         experiment_name=train_cfg["experiment"]["experiment_name"],
 

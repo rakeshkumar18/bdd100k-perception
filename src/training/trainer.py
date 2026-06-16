@@ -2,9 +2,13 @@
 YOLO training implementation.
 """
 
+from datetime import datetime
+from pathlib import Path
+
 from ultralytics import YOLO
 
 from src.training.config import TrainingConfig
+from src.utils.paths import TRAINING_RUNS_DIR
 
 
 class YOLOTrainer:
@@ -28,6 +32,8 @@ class YOLOTrainer:
 
         self.model = YOLO(config.model_name)
 
+        self.run_dir: Path | None = None
+
     def train(self):
         """
         Execute YOLO training.
@@ -36,7 +42,15 @@ class YOLOTrainer:
             Ultralytics training results.
         """
 
-        return self.model.train(
+        timestamp = datetime.now().strftime(
+            "%Y%m%d_%H%M%S"
+        )
+
+        run_name = (
+            f"{self.config.run_name}_{timestamp}"
+        )
+
+        results = self.model.train(
             data=self.config.data_yaml,
             epochs=self.config.epochs,
             batch=self.config.batch,
@@ -44,16 +58,21 @@ class YOLOTrainer:
             device=self.config.device,
             workers=self.config.workers,
             cache=self.config.cache,
-            project=self.config.project,
-            name=self.config.run_name,
+            fraction=self.config.fraction,
+            resume=self.config.resume,
             hsv_h=self.config.hsv_h,
             hsv_s=self.config.hsv_s,
             hsv_v=self.config.hsv_v,
             degrees=self.config.degrees,
             translate=self.config.translate,
             scale=self.config.scale,
-            fraction=self.config.fraction,
             fliplr=self.config.fliplr,
+            project=str(TRAINING_RUNS_DIR),
+            name=run_name,
             exist_ok=False,
             verbose=True,
         )
+
+        self.run_dir = Path(results.save_dir)
+
+        return results

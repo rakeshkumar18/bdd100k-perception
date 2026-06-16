@@ -1,3 +1,7 @@
+"""
+MLflow tracking utilities for YOLO training.
+"""
+
 import platform
 from pathlib import Path
 
@@ -6,35 +10,67 @@ import torch
 
 
 class YOLOMLflowTracker:
+    """
+    Log YOLO training runs to MLflow.
+    """
 
     def log_run(
         self,
         config,
         results,
-        training_time,
-    ):
+        training_time: float,
+    ) -> None:
+        """
+        Log training metadata, metrics, and artifacts.
+
+        Args:
+            config:
+                Training configuration.
+            results:
+                Ultralytics training results.
+            training_time:
+                Total training duration in seconds.
+        """
 
         results_dict = results.results_dict
 
         run_dir = Path(results.save_dir)
-        mlflow.set_tag(
-            "run_dir",
-            str(run_dir)
+
+        best_model_path = (
+            run_dir
+            / "weights"
+            / "best.pt"
         )
 
-        best_model_path = run_dir / "weights" / "best.pt"
+        last_model_path = (
+            run_dir
+            / "weights"
+            / "last.pt"
+        )
+
+        # ==========================================================
+        # Parameters
+        # ==========================================================
 
         mlflow.log_params(
             {
                 "model": config.model_name,
                 "epochs": config.epochs,
-                "imgsz": config.imgsz,
                 "batch": config.batch,
+                "imgsz": config.imgsz,
+                "fraction": config.fraction,
                 "device": config.device,
+                "workers": config.workers,
+                "cache": config.cache,
+                "seed": config.seed,
                 "python_version": platform.python_version(),
                 "torch_version": torch.__version__,
             }
         )
+
+        # ==========================================================
+        # Metrics
+        # ==========================================================
 
         mlflow.log_metrics(
             {
@@ -66,9 +102,30 @@ class YOLOMLflowTracker:
             }
         )
 
-        mlflow.set_tag(
-            "best_model_path",
-            str(best_model_path),
+        # ==========================================================
+        # Tags
+        # ==========================================================
+
+        mlflow.set_tags(
+            {
+                "run_dir": str(run_dir),
+                "best_model_path": str(best_model_path),
+                "last_model_path": str(last_model_path),
+                "model_name": config.model_name,
+                "run_name": run_dir.name,
+            }
         )
 
-        mlflow.log_artifacts(str(run_dir))
+        # ==========================================================
+        # Artifacts
+        # ==========================================================
+
+        if run_dir.exists():
+            try:
+                mlflow.log_artifacts(
+                    str(run_dir)
+                )
+            except Exception as exc:
+                print(
+                    f"WARNING: Failed to log artifacts: {exc}"
+                )

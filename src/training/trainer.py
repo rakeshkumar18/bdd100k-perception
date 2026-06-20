@@ -42,13 +42,9 @@ class YOLOTrainer:
             Ultralytics training results.
         """
 
-        timestamp = datetime.now().strftime(
-            "%Y%m%d_%H%M%S"
-        )
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        run_name = (
-            f"{self.config.run_name}_{timestamp}"
-        )
+        run_name = f"{self.config.run_name}_{timestamp}"
 
         results = self.model.train(
             data=self.config.data_yaml,

@@ -28,9 +28,7 @@ class ModelRegistry:
 
         self.experiment_name = experiment_name
 
-        mlflow.set_tracking_uri(
-            MLFLOW_TRACKING_URI
-        )
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
     def get_best_run(self):
         """
@@ -40,27 +38,17 @@ class ModelRegistry:
             Pandas Series representing the best run.
         """
 
-        experiment = mlflow.get_experiment_by_name(
-            self.experiment_name
-        )
+        experiment = mlflow.get_experiment_by_name(self.experiment_name)
 
         if experiment is None:
-            raise ValueError(
-                f"Experiment '{self.experiment_name}' not found."
-            )
+            raise ValueError(f"Experiment '{self.experiment_name}' not found.")
 
-        runs = mlflow.search_runs(
-            [experiment.experiment_id]
-        )
+        runs = mlflow.search_runs([experiment.experiment_id])
 
-        runs = runs.dropna(
-            subset=["metrics.mAP50B"]
-        )
+        runs = runs.dropna(subset=["metrics.mAP50B"])
 
         if runs.empty:
-            raise ValueError(
-                "No runs with mAP50B found."
-            )
+            raise ValueError("No runs with mAP50B found.")
 
         runs = runs.sort_values(
             "metrics.mAP50B",
@@ -77,16 +65,10 @@ class ModelRegistry:
             Latest run directory.
         """
 
-        run_dirs = [
-            path
-            for path in TRAINING_RUNS_DIR.iterdir()
-            if path.is_dir()
-        ]
+        run_dirs = [path for path in TRAINING_RUNS_DIR.iterdir() if path.is_dir()]
 
         if not run_dirs:
-            raise FileNotFoundError(
-                "No training runs found."
-            )
+            raise FileNotFoundError("No training runs found.")
 
         return max(
             run_dirs,
@@ -103,15 +85,9 @@ class ModelRegistry:
 
         latest_run = self.get_latest_run_dir()
 
-        model_path = (
-            latest_run
-            / "weights"
-            / "best.pt"
-        )
+        model_path = latest_run / "weights" / "best.pt"
 
         if not model_path.exists():
-            raise FileNotFoundError(
-                f"Model not found: {model_path}"
-            )
+            raise FileNotFoundError(f"Model not found: {model_path}")
 
         return model_path

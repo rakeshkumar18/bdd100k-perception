@@ -11,13 +11,9 @@ def main():
 
     evaluator = YOLOEvaluator()
 
-    results = evaluator.evaluate(
-        "configs/yolo_dataset.yaml"
-    )
+    results = evaluator.evaluate("configs/yolo_dataset.yaml")
 
-    report = (
-        FailureAnalyzer.analyze(results)
-    )
+    report = FailureAnalyzer.analyze(results)
 
     print("\nWorst Classes")
     print(report.worst_classes)

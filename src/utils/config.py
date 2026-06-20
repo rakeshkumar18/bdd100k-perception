@@ -4,6 +4,7 @@ from pathlib import Path
 import yaml
 from dotenv import load_dotenv
 
+
 class ConfigManager:
     """Load project configuration and expose dataset-related paths."""
 
@@ -20,9 +21,7 @@ class ConfigManager:
             self.config = yaml.safe_load(f)
 
         # Resolve dataset root ONCE here (canonical resolution)
-        self._dataset_root = (
-            self.project_root / self.config["dataset_root"]
-        ).resolve()
+        self._dataset_root = (self.project_root / self.config["dataset_root"]).resolve()
 
     @property
     def dataset_root(self) -> Path:

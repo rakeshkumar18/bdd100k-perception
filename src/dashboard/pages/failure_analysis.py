@@ -11,7 +11,6 @@ from src.dashboard.pages.training import (
     get_metric,
 )
 
-
 # ==========================================================
 # HELPERS
 # ==========================================================
@@ -33,9 +32,7 @@ def show_image_if_exists(
 
     else:
 
-        st.warning(
-            f"Missing file: {image_path.name}"
-        )
+        st.warning(f"Missing file: {image_path.name}")
 
 
 def show_metric_summary(
@@ -76,9 +73,7 @@ def load_results_csv(
     if not results_csv.exists():
         return None
 
-    return pd.read_csv(
-        results_csv
-    )
+    return pd.read_csv(results_csv)
 
 
 # ==========================================================
@@ -91,18 +86,12 @@ def show_loss_analysis(
 ) -> None:
     """Analyze loss behaviour."""
 
-    st.subheader(
-        "Loss Analysis"
-    )
+    st.subheader("Loss Analysis")
 
-    results = load_results_csv(
-        run_dir
-    )
+    results = load_results_csv(run_dir)
 
     if results is None:
-        st.warning(
-            "results.csv not found."
-        )
+        st.warning("results.csv not found.")
         return
 
     latest_epoch = results.iloc[-1]
@@ -127,8 +116,7 @@ def show_loss_analysis(
             f"{latest_epoch['train/dfl_loss']:.4f}",
         )
 
-    st.info(
-        """
+    st.info("""
         High box loss:
         localization issue
 
@@ -137,8 +125,7 @@ def show_loss_analysis(
 
         High DFL loss:
         poor bounding box quality
-        """
-    )
+        """)
 
 
 # ==========================================================
@@ -151,9 +138,7 @@ def show_confusion_review(
 ) -> None:
     """Review confusion matrix."""
 
-    st.subheader(
-        "Class Confusion Analysis"
-    )
+    st.subheader("Class Confusion Analysis")
 
     col1, col2 = st.columns(2)
 
@@ -167,13 +152,11 @@ def show_confusion_review(
     with col2:
 
         show_image_if_exists(
-            run_dir
-            / "confusion_matrix_normalized.png",
+            run_dir / "confusion_matrix_normalized.png",
             "Normalized Confusion Matrix",
         )
 
-    st.info(
-        """
+    st.info("""
         Look for:
 
         • car ↔ truck confusion
@@ -186,8 +169,7 @@ def show_confusion_review(
 
         Strong off-diagonal cells indicate
         systematic classification errors.
-        """
-    )
+        """)
 
 
 # ==========================================================
@@ -198,34 +180,24 @@ def show_confusion_review(
 def show_dataset_imbalance() -> None:
     """Display class imbalance report."""
 
-    st.subheader(
-        "Dataset Imbalance"
-    )
+    st.subheader("Dataset Imbalance")
 
-    csv_path = (
-        Path("outputs/reports")
-        / "train_class_distribution.csv"
-    )
+    csv_path = Path("outputs/reports") / "train_class_distribution.csv"
 
     if not csv_path.exists():
 
-        st.warning(
-            "Class distribution report missing."
-        )
+        st.warning("Class distribution report missing.")
 
         return
 
-    df = pd.read_csv(
-        csv_path
-    )
+    df = pd.read_csv(csv_path)
 
     st.dataframe(
         df,
         width="stretch",
     )
 
-    st.info(
-        """
+    st.info("""
         Classes with low sample count
         often produce:
 
@@ -234,8 +206,7 @@ def show_dataset_imbalance() -> None:
         • unstable AP
 
         • more false negatives
-        """
-    )
+        """)
 
 
 # ==========================================================
@@ -246,12 +217,9 @@ def show_dataset_imbalance() -> None:
 def show_failure_checklist() -> None:
     """Manual review checklist."""
 
-    st.subheader(
-        "Recommended Failure Review"
-    )
+    st.subheader("Recommended Failure Review")
 
-    st.markdown(
-        """
+    st.markdown("""
 ### Small Objects
 - Traffic lights
 - Traffic signs
@@ -278,8 +246,7 @@ def show_failure_checklist() -> None:
 - Truncated vehicles
 - Partial objects
 - Border objects
-"""
-    )
+""")
 
 
 # ==========================================================
@@ -290,9 +257,7 @@ def show_failure_checklist() -> None:
 def render() -> None:
     """Render failure analysis page."""
 
-    st.title(
-        "Failure Analysis"
-    )
+    st.title("Failure Analysis")
 
     client = MLflowClient()
 
@@ -300,23 +265,15 @@ def render() -> None:
 
     if runs.empty:
 
-        st.warning(
-            "No runs available."
-        )
+        st.warning("No runs available.")
 
         return
 
-    best_run = get_best_run(
-        runs
-    )
+    best_run = get_best_run(runs)
 
-    st.subheader(
-        "Best Historical Model"
-    )
+    st.subheader("Best Historical Model")
 
-    show_metric_summary(
-        best_run
-    )
+    show_metric_summary(best_run)
 
     st.divider()
 
@@ -325,28 +282,17 @@ def render() -> None:
         runs["run_id"].tolist(),
     )
 
-    selected_run = runs[
-        runs["run_id"]
-        == selected_run_id
-    ].iloc[0]
+    selected_run = runs[runs["run_id"] == selected_run_id].iloc[0]
 
-    run_dir = Path(
-        selected_run[
-            "tags.run_dir"
-        ]
-    )
+    run_dir = Path(selected_run["tags.run_dir"])
 
     st.divider()
 
-    show_loss_analysis(
-        run_dir
-    )
+    show_loss_analysis(run_dir)
 
     st.divider()
 
-    show_confusion_review(
-        run_dir
-    )
+    show_confusion_review(run_dir)
 
     st.divider()
 

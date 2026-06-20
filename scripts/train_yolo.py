@@ -24,9 +24,7 @@ def parse_args() -> argparse.Namespace:
         Parsed CLI arguments.
     """
 
-    parser = argparse.ArgumentParser(
-        description="Train YOLO on BDD100K."
-    )
+    parser = argparse.ArgumentParser(description="Train YOLO on BDD100K.")
 
     parser.add_argument(
         "--config",
@@ -108,17 +106,13 @@ def main() -> None:
     # Reproducibility
     # ==========================================================
 
-    set_seed(
-        config.seed
-    )
+    set_seed(config.seed)
 
     # ==========================================================
     # Training setup
     # ==========================================================
 
-    trainer = YOLOTrainer(
-        config=config
-    )
+    trainer = YOLOTrainer(config=config)
 
     logger = MLflowLogger(
         experiment_name=config.experiment_name,
@@ -146,9 +140,7 @@ def main() -> None:
 
             results = trainer.train()
 
-            training_time = (
-                time.time() - start_time
-            )
+            training_time = time.time() - start_time
 
             tracker.log_run(
                 config=config,
@@ -161,10 +153,7 @@ def main() -> None:
                 "completed",
             )
 
-            print(
-                f"\nTraining completed in "
-                f"{training_time:.2f} seconds."
-            )
+            print(f"\nTraining completed in " f"{training_time:.2f} seconds.")
 
         except Exception as exc:
             logger.set_tags(

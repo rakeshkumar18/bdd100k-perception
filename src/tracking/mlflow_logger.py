@@ -13,6 +13,7 @@ import mlflow
 
 from src.utils.paths import MLFLOW_DIR, MLFLOW_TRACKING_URI
 
+
 class MLflowLogger:
     """Manage MLflow experiment configuration and logging."""
 
@@ -30,36 +31,24 @@ class MLflowLogger:
         if tracking_uri is None:
             tracking_uri = MLFLOW_TRACKING_URI
 
-        mlflow.set_tracking_uri(
-            tracking_uri
-        )
+        mlflow.set_tracking_uri(tracking_uri)
 
-        artifact_root = (
-            MLFLOW_DIR / "artifacts"
-        ).resolve()
+        artifact_root = (MLFLOW_DIR / "artifacts").resolve()
 
         artifact_root.mkdir(
             parents=True,
             exist_ok=True,
         )
 
-        experiment = (
-            mlflow.get_experiment_by_name(
-                experiment_name
-            )
-        )
+        experiment = mlflow.get_experiment_by_name(experiment_name)
 
         if experiment is None:
             mlflow.create_experiment(
                 name=experiment_name,
-                artifact_location=(
-                    f"file://{artifact_root}"
-                ),
+                artifact_location=(f"file://{artifact_root}"),
             )
 
-        mlflow.set_experiment(
-            experiment_name
-        )
+        mlflow.set_experiment(experiment_name)
 
     @staticmethod
     def start_run(
@@ -126,9 +115,7 @@ class MLflowLogger:
                 Directory containing artifacts.
         """
 
-        mlflow.log_artifacts(
-            str(directory)
-        )
+        mlflow.log_artifacts(str(directory))
 
     @staticmethod
     def set_tag(
@@ -163,6 +150,4 @@ class MLflowLogger:
                 Dictionary of tag names and values.
         """
 
-        mlflow.set_tags(
-            tags
-        )
+        mlflow.set_tags(tags)

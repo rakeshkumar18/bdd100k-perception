@@ -62,28 +62,20 @@ def display_run_metrics(
 
     c1.metric(
         "mAP50",
-        f"{map50:.3f}"
-        if map50 is not None
-        else "N/A",
+        f"{map50:.3f}" if map50 is not None else "N/A",
     )
 
     c2.metric(
         "mAP50-95",
-        f"{map5095:.3f}"
-        if map5095 is not None
-        else "N/A",
+        f"{map5095:.3f}" if map5095 is not None else "N/A",
     )
 
     c3.metric(
         "Precision",
-        f"{precision:.3f}"
-        if precision is not None
-        else "N/A",
+        f"{precision:.3f}" if precision is not None else "N/A",
     )
 
     c4.metric(
         "Recall",
-        f"{recall:.3f}"
-        if recall is not None
-        else "N/A",
+        f"{recall:.3f}" if recall is not None else "N/A",
     )

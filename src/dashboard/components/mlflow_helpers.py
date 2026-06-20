@@ -40,9 +40,7 @@ def get_metric_column(
         values = runs[new_col]
 
         if old_col in runs.columns:
-            values = values.fillna(
-                runs[old_col]
-            )
+            values = values.fillna(runs[old_col])
 
         return values
 
@@ -65,24 +63,16 @@ def get_best_run(
     )
 
     if metric_col is None:
-        raise ValueError(
-            "mAP50_95B metric column not found."
-        )
+        raise ValueError("mAP50_95B metric column not found.")
 
     runs["mAP50_95"] = metric_col
 
-    runs = runs.dropna(
-        subset=["mAP50_95"]
-    )
+    runs = runs.dropna(subset=["mAP50_95"])
 
     if runs.empty:
-        raise ValueError(
-            "No completed runs found."
-        )
+        raise ValueError("No completed runs found.")
 
-    return runs.loc[
-        runs["mAP50_95"].idxmax()
-    ]
+    return runs.loc[runs["mAP50_95"].idxmax()]
 
 
 def get_latest_valid_run(
@@ -101,9 +91,7 @@ def get_latest_valid_run(
 
     for col in metric_candidates:
         if col in runs.columns:
-            valid_runs = runs[
-                runs[col].notna()
-            ]
+            valid_runs = runs[runs[col].notna()]
             break
 
     if valid_runs.empty:
@@ -134,9 +122,7 @@ def get_run_dir(
         tags.run_dir
     """
 
-    run_dir = run.get(
-        "tags.run_dir"
-    )
+    run_dir = run.get("tags.run_dir")
 
     if pd.isna(run_dir):
         return None
@@ -154,9 +140,7 @@ def get_best_model_path(
 ) -> Path | None:
     """Return best.pt path."""
 
-    model_path = run.get(
-        "tags.best_model_path"
-    )
+    model_path = run.get("tags.best_model_path")
 
     if pd.isna(model_path):
         return None
@@ -174,9 +158,7 @@ def get_last_model_path(
 ) -> Path | None:
     """Return last.pt path."""
 
-    model_path = run.get(
-        "tags.last_model_path"
-    )
+    model_path = run.get("tags.last_model_path")
 
     if pd.isna(model_path):
         return None

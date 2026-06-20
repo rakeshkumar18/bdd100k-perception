@@ -18,12 +18,9 @@ from src.dashboard.components.file_viewers import (
 def render() -> None:
     """Render dataset analysis page."""
 
-    st.title(
-        "BDD100K Dataset Analysis"
-    )
+    st.title("BDD100K Dataset Analysis")
 
-    st.markdown(
-        """
+    st.markdown("""
         This section analyzes the **BDD100K object detection dataset**.
 
         ### Included
@@ -50,8 +47,7 @@ def render() -> None:
         - Lane Marking
         - Drivable Area
         - Semantic Segmentation
-        """
-    )
+        """)
 
     figures_dir = FIGURES_DIR
     reports_dir = REPORTS_DIR
@@ -60,9 +56,7 @@ def render() -> None:
     # SUMMARY
     # ======================================================
 
-    st.subheader(
-        "Dataset Summary"
-    )
+    st.subheader("Dataset Summary")
 
     col1, col2 = st.columns(2)
 
@@ -104,9 +98,7 @@ def render() -> None:
 
     with tab1:
 
-        st.markdown(
-            "### Train vs Validation Comparison"
-        )
+        st.markdown("### Train vs Validation Comparison")
 
         for image_file, caption in [
             (
@@ -162,9 +154,7 @@ def render() -> None:
 
     with tab2:
 
-        st.markdown(
-            "### Scene, Weather, and Time-of-Day Analysis"
-        )
+        st.markdown("### Scene, Weather, and Time-of-Day Analysis")
 
         split = st.radio(
             "Select Split",
@@ -219,9 +209,7 @@ def render() -> None:
 
     with tab3:
 
-        st.markdown(
-            "### Bounding Box and Occlusion Analysis"
-        )
+        st.markdown("### Bounding Box and Occlusion Analysis")
 
         split = st.radio(
             "Select Split",
@@ -268,9 +256,7 @@ def render() -> None:
 
     with tab4:
 
-        st.markdown(
-            "### Data Quality Checks"
-        )
+        st.markdown("### Data Quality Checks")
 
         st.info(
             "Checks include:\n"
@@ -280,51 +266,30 @@ def render() -> None:
             "- Negative width or height"
         )
 
-        quality_train = (
-            reports_dir
-            / "train_quality_report.csv"
-        )
+        quality_train = reports_dir / "train_quality_report.csv"
 
-        quality_val = (
-            reports_dir
-            / "val_quality_report.csv"
-        )
+        quality_val = reports_dir / "val_quality_report.csv"
 
-        invalid_boxes = (
-            reports_dir
-            / "invalid_boxes.csv"
-        )
+        invalid_boxes = reports_dir / "invalid_boxes.csv"
 
         if quality_train.exists():
-            st.markdown(
-                "#### Train Quality Report"
-            )
+            st.markdown("#### Train Quality Report")
             st.dataframe(
-                pd.read_csv(
-                    quality_train
-                ),
+                pd.read_csv(quality_train),
                 width="stretch",
             )
 
         if quality_val.exists():
-            st.markdown(
-                "#### Validation Quality Report"
-            )
+            st.markdown("#### Validation Quality Report")
             st.dataframe(
-                pd.read_csv(
-                    quality_val
-                ),
+                pd.read_csv(quality_val),
                 width="stretch",
             )
 
         if invalid_boxes.exists():
-            st.markdown(
-                "#### Invalid Bounding Boxes"
-            )
+            st.markdown("#### Invalid Bounding Boxes")
             st.dataframe(
-                pd.read_csv(
-                    invalid_boxes
-                ),
+                pd.read_csv(invalid_boxes),
                 width="stretch",
             )
 
@@ -333,6 +298,4 @@ def render() -> None:
             and not quality_val.exists()
             and not invalid_boxes.exists()
         ):
-            st.warning(
-                "No quality reports found."
-            )
+            st.warning("No quality reports found.")

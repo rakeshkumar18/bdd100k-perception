@@ -12,13 +12,9 @@ def get_metric_column(
 ) -> pd.Series | None:
     """Return metric column."""
 
-    new_col = (
-        f"metrics.{metric_name}"
-    )
+    new_col = f"metrics.{metric_name}"
 
-    old_col = (
-        f"metrics.metrics/{metric_name}"
-    )
+    old_col = f"metrics.metrics/{metric_name}"
 
     if new_col in runs.columns:
 
@@ -26,9 +22,7 @@ def get_metric_column(
 
         if old_col in runs.columns:
 
-            values = values.fillna(
-                runs[old_col]
-            )
+            values = values.fillna(runs[old_col])
 
         return values
 
@@ -52,25 +46,17 @@ def get_best_run(
 
     if metric_col is None:
 
-        raise ValueError(
-            "mAP50-95 metric column not found."
-        )
+        raise ValueError("mAP50-95 metric column not found.")
 
     runs["mAP50_95"] = metric_col
 
-    runs = runs.dropna(
-        subset=["mAP50_95"]
-    )
+    runs = runs.dropna(subset=["mAP50_95"])
 
     if runs.empty:
 
-        raise ValueError(
-            "No completed runs found."
-        )
+        raise ValueError("No completed runs found.")
 
-    return runs.loc[
-        runs["mAP50_95"].idxmax()
-    ]
+    return runs.loc[runs["mAP50_95"].idxmax()]
 
 
 def get_latest_valid_run(
@@ -90,9 +76,7 @@ def get_latest_valid_run(
         if col not in runs.columns:
             continue
 
-        valid_runs = runs[
-            runs[col].notna()
-        ]
+        valid_runs = runs[runs[col].notna()]
 
         break
 
@@ -124,24 +108,15 @@ def display_run_info(
 ) -> None:
     """Display run metadata."""
 
-    st.markdown(
-        f"**{label} Run ID:** "
-        f"`{run.get('run_id', 'N/A')}`"
-    )
+    st.markdown(f"**{label} Run ID:** " f"`{run.get('run_id', 'N/A')}`")
 
     if "start_time" in run.index:
 
-        st.markdown(
-            f"**Start Time:** "
-            f"{run['start_time']}"
-        )
+        st.markdown(f"**Start Time:** " f"{run['start_time']}")
 
     if "status" in run.index:
 
-        st.markdown(
-            f"**Status:** "
-            f"{run['status']}"
-        )
+        st.markdown(f"**Status:** " f"{run['status']}")
 
 
 def show_run_comparison(
@@ -151,38 +126,27 @@ def show_run_comparison(
 
     comparison_df = runs.copy()
 
-    comparison_df["mAP50"] = (
-        get_metric_column(
-            comparison_df,
-            "mAP50B",
-        )
+    comparison_df["mAP50"] = get_metric_column(
+        comparison_df,
+        "mAP50B",
     )
 
-    comparison_df["mAP50-95"] = (
-        get_metric_column(
-            comparison_df,
-            "mAP50-95B",
-        )
+    comparison_df["mAP50-95"] = get_metric_column(
+        comparison_df,
+        "mAP50-95B",
     )
 
-    comparison_df["Precision"] = (
-        get_metric_column(
-            comparison_df,
-            "precisionB",
-        )
+    comparison_df["Precision"] = get_metric_column(
+        comparison_df,
+        "precisionB",
     )
 
-    comparison_df["Recall"] = (
-        get_metric_column(
-            comparison_df,
-            "recallB",
-        )
+    comparison_df["Recall"] = get_metric_column(
+        comparison_df,
+        "recallB",
     )
 
-    comparison_df = comparison_df[
-        comparison_df["status"]
-        == "FINISHED"
-    ]
+    comparison_df = comparison_df[comparison_df["status"] == "FINISHED"]
 
     display_cols = [
         "run_id",
@@ -206,9 +170,7 @@ def show_run_comparison(
             )
 
     st.dataframe(
-        comparison_df[
-            display_cols
-        ].sort_values(
+        comparison_df[display_cols].sort_values(
             by="mAP50-95",
             ascending=False,
         ),

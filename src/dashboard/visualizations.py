@@ -16,11 +16,7 @@ def create_metric_chart(
         "metrics/mAP50-95(B)",
     ]
 
-    available = [
-        col
-        for col in metric_columns
-        if col in df.columns
-    ]
+    available = [col for col in metric_columns if col in df.columns]
 
     fig = px.line(
         df,
@@ -30,6 +26,7 @@ def create_metric_chart(
     )
 
     return fig
+
 
 def create_loss_chart(
     df: pd.DataFrame,
@@ -48,16 +45,11 @@ def create_loss_chart(
         "val/dfl_loss",
     ]
 
-    available = [
-        col
-        for col in loss_columns
-        if col in df.columns
-    ]
+    available = [col for col in loss_columns if col in df.columns]
 
     if not available:
         raise ValueError(
-            f"No YOLO loss columns found.\n"
-            f"Available columns: {list(df.columns)}"
+            f"No YOLO loss columns found.\n" f"Available columns: {list(df.columns)}"
         )
 
     fig = px.line(

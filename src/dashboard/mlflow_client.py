@@ -28,9 +28,7 @@ class MLflowClient:
         if tracking_uri is None:
             tracking_uri = MLFLOW_TRACKING_URI
 
-        mlflow.set_tracking_uri(
-            tracking_uri
-        )
+        mlflow.set_tracking_uri(tracking_uri)
 
     def get_runs(
         self,
@@ -47,18 +45,12 @@ class MLflowClient:
             DataFrame containing all runs.
         """
 
-        experiment = mlflow.get_experiment_by_name(
-            experiment_name
-        )
+        experiment = mlflow.get_experiment_by_name(experiment_name)
 
         if experiment is None:
             return pd.DataFrame()
 
-        return mlflow.search_runs(
-            experiment_ids=[
-                experiment.experiment_id
-            ]
-        )
+        return mlflow.search_runs(experiment_ids=[experiment.experiment_id])
 
     def get_best_run(
         self,
@@ -75,23 +67,17 @@ class MLflowClient:
             Best MLflow run.
         """
 
-        runs = self.get_runs(
-            experiment_name
-        )
+        runs = self.get_runs(experiment_name)
 
         if runs.empty:
             return None
 
-        runs = runs.dropna(
-            subset=["metrics.mAP50B"]
-        )
+        runs = runs.dropna(subset=["metrics.mAP50B"])
 
         if runs.empty:
             return None
 
-        return runs.loc[
-            runs["metrics.mAP50B"].idxmax()
-        ]
+        return runs.loc[runs["metrics.mAP50B"].idxmax()]
 
     def get_latest_run(
         self,
@@ -108,9 +94,7 @@ class MLflowClient:
             Latest run.
         """
 
-        runs = self.get_runs(
-            experiment_name
-        )
+        runs = self.get_runs(experiment_name)
 
         if runs.empty:
             return None

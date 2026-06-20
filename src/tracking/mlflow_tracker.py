@@ -36,17 +36,9 @@ class YOLOMLflowTracker:
 
         run_dir = Path(results.save_dir)
 
-        best_model_path = (
-            run_dir
-            / "weights"
-            / "best.pt"
-        )
+        best_model_path = run_dir / "weights" / "best.pt"
 
-        last_model_path = (
-            run_dir
-            / "weights"
-            / "last.pt"
-        )
+        last_model_path = run_dir / "weights" / "last.pt"
 
         # ==========================================================
         # Parameters
@@ -122,10 +114,6 @@ class YOLOMLflowTracker:
 
         if run_dir.exists():
             try:
-                mlflow.log_artifacts(
-                    str(run_dir)
-                )
+                mlflow.log_artifacts(str(run_dir))
             except Exception as exc:
-                print(
-                    f"WARNING: Failed to log artifacts: {exc}"
-                )
+                print(f"WARNING: Failed to log artifacts: {exc}")

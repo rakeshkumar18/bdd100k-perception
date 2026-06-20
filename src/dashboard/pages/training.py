@@ -13,9 +13,7 @@ from src.dashboard.components.mlflow_helpers import (
     get_latest_valid_run,
     get_metric,
     get_metric_column,
-
 )
-
 
 # ==========================================================
 # UI HELPERS
@@ -64,28 +62,16 @@ def display_run_info(
 ) -> None:
     """Display run metadata."""
 
-    st.markdown(
-        f"**{label} Run ID:** "
-        f"`{run.get('run_id', 'N/A')}`"
-    )
+    st.markdown(f"**{label} Run ID:** " f"`{run.get('run_id', 'N/A')}`")
 
     if "start_time" in run.index:
-        st.markdown(
-            f"**Start Time:** "
-            f"{run['start_time']}"
-        )
+        st.markdown(f"**Start Time:** " f"{run['start_time']}")
 
     if "status" in run.index:
-        st.markdown(
-            f"**Status:** "
-            f"{run['status']}"
-        )
+        st.markdown(f"**Status:** " f"{run['status']}")
 
     if "tags.run_dir" in run.index:
-        st.markdown(
-            f"**Run Directory:** "
-            f"`{run['tags.run_dir']}`"
-        )
+        st.markdown(f"**Run Directory:** " f"`{run['tags.run_dir']}`")
 
 
 # ==========================================================
@@ -120,9 +106,7 @@ def show_run_comparison(
         "recallB",
     )
 
-    comparison_df = comparison_df[
-        comparison_df["status"] == "FINISHED"
-    ]
+    comparison_df = comparison_df[comparison_df["status"] == "FINISHED"]
 
     display_cols = [
         "run_id",
@@ -164,24 +148,18 @@ def show_training_curves(
     results_csv = run_dir / "results.csv"
 
     if not results_csv.exists():
-        st.warning(
-            f"Missing results.csv: {results_csv}"
-        )
+        st.warning(f"Missing results.csv: {results_csv}")
         return
 
     try:
-        results_df = pd.read_csv(
-            run_dir / "results.csv"
-        )
+        results_df = pd.read_csv(run_dir / "results.csv")
         st.plotly_chart(
             create_loss_chart(results_df),
             width="stretch",
         )
 
     except Exception as exc:
-        st.error(
-            f"Unable to load training curves: {exc}"
-        )
+        st.error(f"Unable to load training curves: {exc}")
 
 
 # ==========================================================
@@ -194,18 +172,10 @@ def show_training_configuration(
 ) -> None:
     """Display selected run parameters."""
 
-    param_cols = sorted(
-        [
-            col
-            for col in run.index
-            if col.startswith("params.")
-        ]
-    )
+    param_cols = sorted([col for col in run.index if col.startswith("params.")])
 
     if not param_cols:
-        st.info(
-            "No parameters logged."
-        )
+        st.info("No parameters logged.")
         return
 
     config_df = pd.DataFrame(
@@ -217,10 +187,7 @@ def show_training_configuration(
                 )
                 for col in param_cols
             ],
-            "Value": [
-                run[col]
-                for col in param_cols
-            ],
+            "Value": [run[col] for col in param_cols],
         }
     )
 
@@ -258,19 +225,13 @@ def show_artifacts(
     for idx, (
         filename,
         caption,
-    ) in enumerate(
-        artifact_files
-    ):
+    ) in enumerate(artifact_files):
         file_path = run_dir / filename
 
         if not file_path.exists():
             continue
 
-        target_col = (
-            col1
-            if idx % 2 == 0
-            else col2
-        )
+        target_col = col1 if idx % 2 == 0 else col2
 
         with target_col:
             st.image(
@@ -288,27 +249,19 @@ def show_artifacts(
 def render() -> None:
     """Render training dashboard."""
 
-    st.title(
-        "BDD100K Training Dashboard"
-    )
+    st.title("BDD100K Training Dashboard")
 
     client = MLflowClient()
 
     runs = client.get_runs()
 
     if runs.empty:
-        st.warning(
-            "No runs found."
-        )
+        st.warning("No runs found.")
         return
 
-    latest_run = get_latest_valid_run(
-        runs
-    )
+    latest_run = get_latest_valid_run(runs)
 
-    best_run = get_best_run(
-        runs
-    )
+    best_run = get_best_run(runs)
 
     display_run_metrics(
         latest_run,
@@ -334,37 +287,25 @@ def render() -> None:
 
     st.divider()
 
-    st.subheader(
-        "Run Comparison"
-    )
+    st.subheader("Run Comparison")
 
-    comparison_df = show_run_comparison(
-        runs
-    )
+    comparison_df = show_run_comparison(runs)
 
     st.divider()
 
-    st.subheader(
-        "Selected Run Analysis"
-    )
+    st.subheader("Selected Run Analysis")
 
-    run_options = (
-        comparison_df.sort_values(
-            by="start_time",
-            ascending=False,
-        )["run_id"]
-        .tolist()
-    )
+    run_options = comparison_df.sort_values(
+        by="start_time",
+        ascending=False,
+    )["run_id"].tolist()
 
     selected_run_id = st.selectbox(
         "Select Run",
         run_options,
     )
 
-    selected_run = runs[
-        runs["run_id"]
-        == selected_run_id
-    ].iloc[0]
+    selected_run = runs[runs["run_id"] == selected_run_id].iloc[0]
 
     display_run_metrics(
         selected_run,
@@ -376,49 +317,28 @@ def render() -> None:
         "Selected",
     )
 
-    if (
-        "tags.run_dir"
-        not in selected_run.index
-    ):
-        st.error(
-            "tags.run_dir missing from MLflow run."
-        )
+    if "tags.run_dir" not in selected_run.index:
+        st.error("tags.run_dir missing from MLflow run.")
         return
 
-    run_dir = Path(
-        selected_run["tags.run_dir"]
-    )
+    run_dir = Path(selected_run["tags.run_dir"])
 
     if not run_dir.exists():
-        st.error(
-            f"Run directory not found:\n{run_dir}"
-        )
+        st.error(f"Run directory not found:\n{run_dir}")
         return
 
     st.divider()
 
-    st.subheader(
-        "Training Configuration"
-    )
+    st.subheader("Training Configuration")
 
-    show_training_configuration(
-        selected_run
-    )
+    show_training_configuration(selected_run)
 
     st.divider()
 
-    st.header(
-        "Training Artifacts"
-    )
+    st.header("Training Artifacts")
 
-    show_artifacts(
-        run_dir
-    )
+    show_artifacts(run_dir)
 
-    st.subheader(
-    "Training Curves"
-    )
+    st.subheader("Training Curves")
 
-    show_training_curves(
-        run_dir
-    )
+    show_training_curves(run_dir)

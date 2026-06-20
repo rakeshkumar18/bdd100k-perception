@@ -11,6 +11,7 @@ from src.dashboard.pages.training import (
     get_metric,
 )
 
+
 def show_image_if_exists(
     image_path: Path,
     caption: str,
@@ -27,9 +28,8 @@ def show_image_if_exists(
 
     else:
 
-        st.warning(
-            f"Missing artifact: {image_path.name}"
-        )
+        st.warning(f"Missing artifact: {image_path.name}")
+
 
 def show_metrics(
     run: pd.Series,
@@ -58,6 +58,7 @@ def show_metrics(
         f"{get_metric(run, 'recallB'):.3f}",
     )
 
+
 def show_metrics(
     run: pd.Series,
 ) -> None:
@@ -85,14 +86,13 @@ def show_metrics(
         f"{get_metric(run, 'recallB'):.3f}",
     )
 
+
 def show_model_metadata(
     run: pd.Series,
 ) -> None:
     """Display selected run metadata."""
 
-    st.subheader(
-        "Model Metadata"
-    )
+    st.subheader("Model Metadata")
 
     metadata = {}
 
@@ -108,9 +108,8 @@ def show_model_metadata(
         if col in run.index:
             metadata[col] = run[col]
 
-    st.json(
-        metadata
-    )
+    st.json(metadata)
+
 
 def show_detection_curves(
     run_dir: Path,
@@ -149,6 +148,7 @@ def show_detection_curves(
             "Recall Curve",
         )
 
+
 def show_confusion_matrix(
     run_dir: Path,
 ) -> None:
@@ -166,8 +166,7 @@ def show_confusion_matrix(
     with col2:
 
         show_image_if_exists(
-            run_dir
-            / "confusion_matrix_normalized.png",
+            run_dir / "confusion_matrix_normalized.png",
             "Normalized Confusion Matrix",
         )
 
@@ -175,9 +174,7 @@ def show_confusion_matrix(
 def render() -> None:
     """Render evaluation page."""
 
-    st.title(
-        "Model Evaluation"
-    )
+    st.title("Model Evaluation")
 
     client = MLflowClient()
 
@@ -185,79 +182,47 @@ def render() -> None:
 
     if runs.empty:
 
-        st.warning(
-            "No runs found."
-        )
+        st.warning("No runs found.")
 
         return
 
-    best_run = get_best_run(
-        runs
-    )
+    best_run = get_best_run(runs)
 
-    st.subheader(
-        "Best Historical Model"
-    )
+    st.subheader("Best Historical Model")
 
-    show_metrics(
-        best_run
-    )
+    show_metrics(best_run)
 
     st.divider()
 
-    st.subheader(
-        "Run Selection"
-    )
+    st.subheader("Run Selection")
 
     selected_run_id = st.selectbox(
         "Select Run",
         runs["run_id"].tolist(),
     )
 
-    selected_run = runs[
-        runs["run_id"]
-        == selected_run_id
-    ].iloc[0]
+    selected_run = runs[runs["run_id"] == selected_run_id].iloc[0]
 
-    run_dir = Path(
-        selected_run[
-            "tags.run_dir"
-        ]
-    )
+    run_dir = Path(selected_run["tags.run_dir"])
 
     st.divider()
 
-    st.subheader(
-        "Evaluation Metrics"
-    )
+    st.subheader("Evaluation Metrics")
 
-    show_metrics(
-        selected_run
-    )
+    show_metrics(selected_run)
 
     st.divider()
 
-    st.subheader(
-        "Confusion Matrix"
-    )
+    st.subheader("Confusion Matrix")
 
-    show_confusion_matrix(
-        run_dir
-    )
+    show_confusion_matrix(run_dir)
 
     st.divider()
 
-    st.subheader(
-        "Detection Curves"
-    )
+    st.subheader("Detection Curves")
 
-    show_detection_curves(
-        run_dir
-    )
+    show_detection_curves(run_dir)
 
     st.divider()
 
-    show_model_metadata(
-        selected_run
-    )
-
+    show_model_metadata(selected_run)

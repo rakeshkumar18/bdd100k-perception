@@ -13,9 +13,7 @@ def show_image(
 ) -> None:
     """Display image from directory."""
 
-    image_path = (
-        image_dir / image_name
-    )
+    image_path = image_dir / image_name
 
     if image_path.exists():
 
@@ -27,10 +25,7 @@ def show_image(
 
     else:
 
-        st.warning(
-            f"Missing image: "
-            f"{image_path}"
-        )
+        st.warning(f"Missing image: " f"{image_path}")
 
 
 def show_image_if_exists(
@@ -49,10 +44,7 @@ def show_image_if_exists(
 
     else:
 
-        st.warning(
-            f"Missing artifact: "
-            f"{image_path.name}"
-        )
+        st.warning(f"Missing artifact: " f"{image_path.name}")
 
 
 def show_table(
@@ -62,15 +54,11 @@ def show_table(
 ) -> None:
     """Display CSV table."""
 
-    csv_path = (
-        table_dir / csv_name
-    )
+    csv_path = table_dir / csv_name
 
     if csv_path.exists():
 
-        st.markdown(
-            f"#### {title}"
-        )
+        st.markdown(f"#### {title}")
 
         st.dataframe(
             pd.read_csv(csv_path),
@@ -79,7 +67,4 @@ def show_table(
 
     else:
 
-        st.info(
-            f"Missing table: "
-            f"{csv_path}"
-        )
+        st.info(f"Missing table: " f"{csv_path}")

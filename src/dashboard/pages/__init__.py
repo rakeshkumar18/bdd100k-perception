@@ -35,30 +35,29 @@ PAGES = {
 # SIDEBAR
 # ==========================================================
 
+
 def render_sidebar() -> str:
     """Render sidebar navigation."""
 
-    st.sidebar.title(
-        "BDD100K Dashboard"
-    )
+    st.sidebar.title("BDD100K Dashboard")
 
     return st.sidebar.radio(
         "Navigation",
         list(PAGES.keys()),
     )
 
+
 # ==========================================================
 # MAIN
 # ==========================================================
+
 
 def main() -> None:
     """Run dashboard."""
 
     selected_page = render_sidebar()
 
-    render_page = PAGES[
-        selected_page
-    ]
+    render_page = PAGES[selected_page]
 
     render_page()
 

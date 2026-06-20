@@ -33,7 +33,6 @@ def load_training_config() -> TrainingConfig:
         # Model
         model_name=model_cfg["model"]["name"],
         data_yaml="configs/yolo_dataset.yaml",
-
         # Training
         epochs=train_cfg["training"]["epochs"],
         batch=train_cfg["training"]["batch"],
@@ -44,20 +43,16 @@ def load_training_config() -> TrainingConfig:
         device=train_cfg["hardware"]["device"],
         workers=train_cfg["hardware"]["workers"],
         cache=train_cfg["hardware"]["cache"],
-
         # Reproducibility
         seed=train_cfg["reproducibility"]["seed"],
-
         # Experiment
         output_dir=train_cfg["experiment"]["output_dir"],
         run_name=train_cfg["experiment"]["run_name"],
         experiment_name=train_cfg["experiment"]["experiment_name"],
-
         # Augmentation
         hsv_h=train_cfg["augmentation"]["hsv_h"],
         hsv_s=train_cfg["augmentation"]["hsv_s"],
         hsv_v=train_cfg["augmentation"]["hsv_v"],
-
         degrees=train_cfg["augmentation"]["degrees"],
         translate=train_cfg["augmentation"]["translate"],
         scale=train_cfg["augmentation"]["scale"],

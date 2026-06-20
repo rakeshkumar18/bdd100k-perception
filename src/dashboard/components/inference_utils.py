@@ -27,18 +27,11 @@ def load_predictor() -> YOLOPredictor:
     runs = client.get_runs()
 
     if runs.empty:
-        raise ValueError(
-            "No MLflow runs found."
-        )
+        raise ValueError("No MLflow runs found.")
 
-    best_run = get_best_run(
-        runs
-    )
-    
+    best_run = get_best_run(runs)
 
-    model_path = Path(
-    best_run["tags.best_model_path"]
-    )
+    model_path = Path(best_run["tags.best_model_path"])
 
     # If MLflow stored an absolute path and it exists,
     # use it directly.
@@ -47,30 +40,17 @@ def load_predictor() -> YOLOPredictor:
 
     # Otherwise reconstruct relative to PROJECT_ROOT.
     else:
-        outputs_idx = model_path.parts.index(
-            "outputs"
-        )
+        outputs_idx = model_path.parts.index("outputs")
 
-        relative_path = Path(
-            *model_path.parts[outputs_idx:]
-        )
+        relative_path = Path(*model_path.parts[outputs_idx:])
 
-        resolved_model_path = (
-            PROJECT_ROOT / relative_path
-        )
+        resolved_model_path = PROJECT_ROOT / relative_path
 
-    print(
-        "Resolved model path:",
-        resolved_model_path
-    )
+    print("Resolved model path:", resolved_model_path)
 
-    return YOLOPredictor(
-        model_path=resolved_model_path
-    )
+    return YOLOPredictor(model_path=resolved_model_path)
 
-    return YOLOPredictor(
-        model_path=model_path
-    )
+    return YOLOPredictor(model_path=model_path)
 
 
 def get_annotated_image(
@@ -103,20 +83,11 @@ def extract_detections(
 
     for box in result.boxes:
 
-        cls_id = int(
-            box.cls.item()
-        )
+        cls_id = int(box.cls.item())
 
-        confidence = float(
-            box.conf.item()
-        )
+        confidence = float(box.conf.item())
 
-        x1, y1, x2, y2 = (
-            box.xyxy[0]
-            .cpu()
-            .numpy()
-            .tolist()
-        )
+        x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().tolist()
 
         detections.append(
             {
@@ -140,6 +111,4 @@ def detections_to_dataframe(
 ) -> pd.DataFrame:
     """Convert detections to dataframe."""
 
-    return pd.DataFrame(
-        detections
-    )
+    return pd.DataFrame(detections)

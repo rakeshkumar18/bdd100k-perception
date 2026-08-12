@@ -10,3 +10,4 @@ pillow==12.2.0
 mlflow==3.13.0
 ultralytics
 opencv-python-headless
+pyserial

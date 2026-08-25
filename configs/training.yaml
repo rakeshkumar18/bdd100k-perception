@@ -9,10 +9,10 @@
 
 training:
   # Number of training epochs.
-  epochs: 2
+  epochs: 10
 
   # Batch size used during training.
-  batch: 16
+  batch: 8
 
   # Input image resolution.
   imgsz: 640
@@ -21,7 +21,7 @@ training:
   fraction: 1
 
   # resume training from a previous checkpoint (True/False).
-  resume: true
+  resume: "/Users/rk/Documents/Applied_cv/bdd100k-perception/outputs/training_runs/yolov8n_bdd100k_20260820_170621/weights/last.pt"
 
 hardware:
   # Device to use: cpu, cuda, or mps (Apple Silicon).

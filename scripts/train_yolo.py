@@ -5,6 +5,7 @@ Train a YOLO model on the BDD100K dataset.
 import argparse
 import time
 
+from networkx import config
 from ultralytics import settings
 
 from src.training.seed import set_seed
@@ -65,8 +66,9 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument(
         "--resume",
-        action="store_true",
-        help="Resume a previous training run.",
+        type=str,
+        default=None,
+        help="Path to checkpoint for resuming training.",
     )
 
     return parser.parse_args()
@@ -80,6 +82,9 @@ def main() -> None:
     args = parse_args()
 
     config = load_training_config()
+
+    print("DEBUG resume:", config.resume)
+    print("DEBUG resume type:", type(config.resume))
 
     # ==========================================================
     # CLI overrides
@@ -100,7 +105,8 @@ def main() -> None:
     if args.model is not None:
         config.model_name = args.model
 
-    config.resume = args.resume
+    if args.resume is not None:
+        config.resume = args.resume
 
     # ==========================================================
     # Reproducibility
@@ -130,6 +136,7 @@ def main() -> None:
     print(f"Workers    : {config.workers}")
     print(f"Cache      : {config.cache}")
     print(f"Run Name   : {config.run_name}")
+    print(f"Resume     : {config.resume}")
     print("=====================================\n")
 
     with logger.start_run(

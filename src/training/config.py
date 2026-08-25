@@ -24,7 +24,7 @@ class TrainingConfig:
     batch: int
     imgsz: int
     fraction: float
-    resume: bool
+    resume: str | None
 
     # ==========================================================================
     # Hardware
